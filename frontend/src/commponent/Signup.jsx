@@ -1,9 +1,75 @@
+import '../App.css'
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupUser, clearError, clearSuccess } from '../store/slices/authSlice';
 
-import './App.css'
-import React, { useState } from 'react';
+const Signup = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-const BookNestLanding = () => {
+  const { loading, error, success } = useSelector((state) => state.auth);
+  
   const [showPassword, setShowPassword] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    city: '',
+    country: '',
+    password: ''
+  });
+
+  const handleInputChange = (e) => {
+    if (error) dispatch(clearError());
+    if (success) dispatch(clearSuccess());
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // ✅ Backend ke expected payload ke hisaab se
+  const payload = {
+    firstname: formData.firstName,
+    lastname: formData.lastName,
+    email: formData.email,
+    phoneno: formData.phone,
+    password: formData.password,
+    address: {
+      city: formData.city,
+      country: formData.country
+    },
+    isadmin: false // agar aap admin nahi hai
+  };
+
+  try {
+    const res = await dispatch(signupUser(payload)).unwrap();
+
+    // ✅ Token localStorage me save karen
+    if (res.token) {
+      localStorage.setItem('token', res.token);
+    }
+
+    // Form reset
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      city: '',
+      country: '',
+      password: ''
+    });
+
+    setTimeout(() => navigate('/login'), 1500);
+  } catch (err) {
+    console.error('Signup failed:', err);
+  }
+};
+
 
   return (
     <div className="flex ">
@@ -68,7 +134,21 @@ const BookNestLanding = () => {
             </p>
           </div>
 
-          <form className="space-y-4">
+          {/* Success Message */}
+          {success && (
+            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+              Account created successfully! You can now log in.
+            </div>
+          )}
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Row: First + Last Name */}
             <div className="flex gap-4">
               <div className="flex-1">
@@ -79,8 +159,13 @@ const BookNestLanding = () => {
                   <span className="absolute left-3 top-2 text-gray-500">👤</span>
                   <input
                     type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     placeholder="Enter your first name"
                     className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                    required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -92,8 +177,13 @@ const BookNestLanding = () => {
                   <span className="absolute left-3 top-2 text-gray-500">👤</span>
                   <input
                     type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     placeholder="Enter your last name"
                     className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                    required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -108,8 +198,13 @@ const BookNestLanding = () => {
                 <span className="absolute left-3 top-2 text-gray-500">📧</span>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="Enter your email"
                   className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                  required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -123,8 +218,13 @@ const BookNestLanding = () => {
                 <span className="absolute left-3 top-2 text-gray-500">📞</span>
                 <input
                   type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   placeholder="Enter your phone number"
                   className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                  required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -139,8 +239,13 @@ const BookNestLanding = () => {
                   <span className="absolute left-3 top-2 text-gray-500">🏙️</span>
                   <input
                     type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
                     placeholder="Enter your city"
                     className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                    required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -152,8 +257,13 @@ const BookNestLanding = () => {
                   <span className="absolute left-3 top-2 text-gray-500">🌍</span>
                   <input
                     type="text"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
                     placeholder="Enter your country"
                     className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                    required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -168,13 +278,20 @@ const BookNestLanding = () => {
                 <span className="absolute left-3 top-2 text-gray-500">🔒</span>
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   placeholder="Enter your password"
                   className="w-full border rounded-lg p-2 pl-10 focus:ring-2 focus:ring-blue-500"
+                  required
+                  disabled={loading}
+                  minLength="6"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-2 text-gray-600"
+                  disabled={loading}
                 >
                   {showPassword ? "🙈" : "👁️"}
                 </button>
@@ -184,16 +301,17 @@ const BookNestLanding = () => {
             {/* SignUp Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg mt-4 font-semibold hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg mt-4 font-semibold hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
 
             <p className="text-center mt-3 text-sm">
               Already have an account?{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <Link to="/login" className="text-blue-600 hover:underline">
                 Login
-              </a>
+              </Link>
             </p>
           </form>
         </div>
@@ -202,4 +320,4 @@ const BookNestLanding = () => {
   );
 };
 
-export default BookNestLanding;
+export default Signup;
