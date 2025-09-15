@@ -31,7 +31,7 @@ const handleSubmit = async (e) => {
       localStorage.setItem("token", result.token);
     }
 
-    navigate("/books"); // redirect
+    navigate("/booklist"); // redirect
   } catch (err) {
     console.error("Login failed:", err);
   }

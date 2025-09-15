@@ -7,6 +7,7 @@ const { initSocket } = require('./src/functions/socket');
 const http = require('http');
 const stripeRoutes = require("./src/routes/stripeRoutes");
 const walletRoute = require('./src/routes/walletroutes');
+const checkRoute = require('./src/routes/checkroute');
 const cors = require('cors');
 
 dotenv.config();
@@ -18,12 +19,13 @@ app.use(cors({
   origin: 'http://localhost:5173', // frontend URL
   credentials: true
 }));
+app.use('/images', express.static('public/images'));
 
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
-
+app.use('/api/check', checkRoute);
 // Connect to database
 connectDB();
 
@@ -41,6 +43,10 @@ app.use('/stripe', stripeRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome here');
 });
+app.get('/api/books', (req, res) => {
+  res.json([{ id: 1, title: 'Book 1' }, { id: 2, title: 'Book 2' }]);
+});
+
 
 // Start server
 server.listen(process.env.PORT, () => {

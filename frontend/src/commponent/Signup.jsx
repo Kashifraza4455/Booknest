@@ -72,7 +72,7 @@ const Signup = () => {
 
 
   return (
-    <div className="flex ">
+    <div className="flex min-h-screen ">
       {/* Left Section */}
       <div className="flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex flex-col justify-center relative overflow-hidden">
         {/* Background decoration dots */}

@@ -13,12 +13,13 @@ router.get('/selectedBook/:id', bookController.selectedBook); // search book by 
 router.put('/addwishlist/:id', verifyToken, bookController.likeBook); // when user like the book DONE
 router.get("/getwishlist", verifyToken, bookController.getLikedBooks); // get wishlist of user DONE
 router.put('/updatebook/:id', verifyToken, upload.array('images', 5), bookController.editBook);// update book by user DONE
-router.get('/getbooks', verifyToken, bookController.getbooksglobaly); // get all books of all users  DONE
+// router.get('/getbooks', verifyToken, bookController.getbooksglobaly); // get all books of all users  DONE
 router.delete('/deletebook/:id', verifyToken, bookController.deleteBook); // delete book by user DONE
 router.post("/requestbid/:id", verifyToken, bookController.requestBook); // request book by user DONE
 router.get("/getrequests", verifyToken, bookController.getRequests); // get all requests of user DONE
 router.post("/handlerequest", verifyToken, bookController.handleRequest); // handle request by user DONE
 router.get('/notifications',verifyToken, bookController.getNotifications);
+router.get('/global', verifyToken, bookController.getbooksglobaly);
 
 
 // //admin routes

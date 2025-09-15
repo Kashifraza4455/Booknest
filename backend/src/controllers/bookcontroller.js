@@ -457,60 +457,17 @@ exports.editBook = async (req, res) => {
 };
 
 
+// Backend controller me
 exports.getbooksglobaly = async (req, res) => {
-    const { mostpopular, newlyadded, genre, userid, page = 1 } = req.query;
-    const ITEMS_PER_PAGE = 12;
-
-    try {
-        // Verify user existence
-        const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-
-        let filter = { isActive: true, isSold: false, status: 'Approved' };
-
-        if (genre) {
-            filter.genre = genre;
-            // Optional: remove or adjust if genre-specific books should include pending
-            filter.status = 'Pending';
-        }
-
-        if (userid) {
-            filter.user = userid;
-        }
-
-        let booksQuery = Book.find(filter).populate('user', 'firstname lastname phoneno email address');
-
-        if (mostpopular) {
-            booksQuery = booksQuery.sort({ likes: -1 });
-        } else if (newlyadded) {
-            booksQuery = booksQuery.sort({ createdAt: -1 });
-        } else {
-            booksQuery = booksQuery.sort({ createdAt: -1 }); // Default sort
-        }
-
-        const totalBooks = await Book.countDocuments(filter);
-        const skip = (parseInt(page) - 1) * ITEMS_PER_PAGE;
-
-        const books = await booksQuery.skip(skip).limit(ITEMS_PER_PAGE);
-
-        // Add isRequested flag
-        const userRequestedBooks = new Set(user.sentrequests.map(id => id.toString()));
-        const booksWithFlag = books.map(book => ({
-            ...book.toObject(),
-            isRequested: userRequestedBooks.has(book._id.toString())
-        }));
-
-        res.status(200).json({
-            books: booksWithFlag,
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(totalBooks / ITEMS_PER_PAGE),
-            totalBooks
-        });
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const books = await Book.find(); // ya jo bhi query se 16 books lana chahte ho
+    res.status(200).json({ books }); // frontend me res.data.books se access karenge
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
+
+
 
 
 //delete book by user
