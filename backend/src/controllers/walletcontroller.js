@@ -1,6 +1,5 @@
 const User = require('../models/usermodel');
 const Wallet = require('../models/userwallet');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const dotenv = require('dotenv')
 dotenv.config();
 

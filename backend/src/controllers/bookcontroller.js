@@ -7,7 +7,6 @@ const transporter = require('../middleware/transporter');// for sending email
 const { emitData, sendNotification } = require('../functions/socket');
 const Notification = require('../models/notificationSchema');
 const ChatRoom = require('../models/chatRoomSchema');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const dotenv = require('dotenv')
 dotenv.config();
 

@@ -8,7 +8,7 @@ const validateEmail = require("../functions/emailValidation");
 const checkStrongPassword = require('../functions/strongpass');
 const Notification = require('../models/notificationSchema');
 const Wallet = require('../models/userwallet');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -153,6 +153,9 @@ exports.verifyEmail = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+
 
 
 // LOGIN USER

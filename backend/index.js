@@ -5,7 +5,6 @@ const userRoute = require('./src/routes/userroute');
 const bookRoute = require('./src/routes/bookroute');
 const { initSocket } = require('./src/functions/socket');
 const http = require('http');
-const stripeRoutes = require("./src/routes/stripeRoutes");
 const walletRoute = require('./src/routes/walletroutes');
 const checkRoute = require('./src/routes/checkroute');
 const cors = require('cors');
@@ -37,7 +36,6 @@ initSocket(server);
 app.use('/api/user', userRoute);
 app.use('/api/books', bookRoute);
 app.use('/api/wallet', walletRoute);
-app.use('/stripe', stripeRoutes);
 
 // Home route
 app.get('/', (req, res) => {
