@@ -22,15 +22,14 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: function(origin, callback){
-    if(!origin) return callback(null, true); // allow Postman / curl
-    if(allowedOrigins.indexOf(origin) === -1){
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
     }
-    return callback(null, true);
   },
-  credentials: true
+  credentials: true,
 }));
 
 app.use('/images', express.static('public/images'));
