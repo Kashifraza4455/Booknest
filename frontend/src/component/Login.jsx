@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { loginUser } from "../store/slices/authSlice";
-import { loginUser, sendVerification } from '../api'; // api.js ka path
+import {sendVerification } from '../api'; // api.js ka path
 
 function Login() {
   const [email, setEmail] = useState("");
