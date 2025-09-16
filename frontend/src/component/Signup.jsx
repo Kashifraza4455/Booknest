@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser, clearError, clearSuccess } from '../store/slices/authSlice';
+import { signupUser as signupAPI } from '../api'; 
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -28,10 +29,9 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-
-  // ✅ Backend ke expected payload ke hisaab se
+  
   const payload = {
     firstname: formData.firstName,
     lastname: formData.lastName,
@@ -42,18 +42,14 @@ const Signup = () => {
       city: formData.city,
       country: formData.country
     },
-    isadmin: false // agar aap admin nahi hai
+    isadmin: false
   };
 
   try {
-    const res = await dispatch(signupUser(payload)).unwrap();
+    const res = await signupAPI(payload); // ✅ backend Render link se connect ho gaya
 
-    // ✅ Token localStorage me save karen
-    if (res.token) {
-      localStorage.setItem('token', res.token);
-    }
+    if (res.token) localStorage.setItem('token', res.token);
 
-    // Form reset
     setFormData({
       firstName: '',
       lastName: '',

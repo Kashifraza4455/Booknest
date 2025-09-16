@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { loginUser } from "../store/slices/authSlice";
+import { loginUser, sendVerification } from '../api'; // api.js ka path
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -23,24 +24,17 @@ function Login() {
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const result = await dispatch(loginUser({ email, password })).unwrap();
+    const result = await loginUser({ email, password }); // ✅ backend Render se connect
     console.log("Login successful:", result);
 
-    // ✅ token ko localStorage me save karo
-    if (result.token) {
-      localStorage.setItem("token", result.token);
-    }
+    if (result.token) localStorage.setItem("token", result.token);
 
-    navigate("/booklist"); // redirect
+    navigate("/booklist");
   } catch (err) {
     console.error("Login failed:", err);
   }
 };
 
-
-
-
-  // Handle sending verification email
 const handleSendVerification = async () => {
   if (!email) {
     setVerificationMessage("Please enter your email first");
@@ -48,16 +42,11 @@ const handleSendVerification = async () => {
   }
   setLoadingVerification(true);
   try {
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/user/sendvarification`, 
-      { email }
-    );
-    setVerificationMessage(res.data.message);
+    const res = await sendVerification(email); // ✅ api.js se call
+    setVerificationMessage(res.message);
   } catch (err) {
     console.error(err);
-    setVerificationMessage(
-      err.response?.data?.message || "Error sending verification email"
-    );
+    setVerificationMessage(err.message || "Error sending verification email");
   }
   setLoadingVerification(false);
 };

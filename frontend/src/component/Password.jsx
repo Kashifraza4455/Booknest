@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { changePassword } from '../api'; // api.js ka path
 
 export default function BookNestScreen() {
-  const [oldPassword, setOldPassword] = useState('');
+   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -14,7 +15,7 @@ export default function BookNestScreen() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-const handleChangePassword = async () => {
+  const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -31,16 +32,12 @@ const handleChangePassword = async () => {
         return;
       }
 
-      const res = await axios.post(
-        "http://localhost:3000/api/user/change-password",
-        { oldPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await changePassword(oldPassword, newPassword, token); // ✅ Render backend se connect
 
-      alert(res.data.message);
+      alert(res.message);
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

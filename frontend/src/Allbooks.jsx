@@ -3,16 +3,20 @@ import axios from "axios";
 import { MapPin, BookOpen } from "lucide-react";
 
 export default function AllBooksPage() {
-  const [books, setBooks] = useState([]);
+ const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("http://localhost:3000/api/books/global", {
-        headers: { Authorization: `Bearer ${token}` }, 
-      })
-      .then((res) => setBooks(res.data.books))
-      .catch((err) => console.error("Error fetching books:", err));
+    const fetchBooks = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const booksData = await getGlobalBooks(token); // ✅ Render backend se connect
+        setBooks(booksData);
+      } catch (err) {
+        console.error("Error fetching books:", err);
+      }
+    };
+
+    fetchBooks();
   }, []);
 
   return (

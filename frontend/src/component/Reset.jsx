@@ -2,29 +2,27 @@ import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { verifyOtp } from '../api'; // api.js ka path
 
 export default function BookNest() {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+ const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || ''; // Email passed from Send OTP screen
+  const email = location.state?.email || '';
 
-  // Handle OTP input change
   const handleOtpChange = (index, value) => {
     if (value.length > 1) return;
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto focus next input
     if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       if (nextInput) nextInput.focus();
     }
   };
 
-  // Handle backspace
   const handleKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       const prevInput = document.getElementById(`otp-${index - 1}`);
@@ -32,7 +30,6 @@ export default function BookNest() {
     }
   };
 
-  // Verify OTP function
   const handleVerifyOtp = async () => {
     const enteredOtp = otp.join('');
     if (enteredOtp.length !== 6) {
@@ -42,16 +39,13 @@ export default function BookNest() {
 
     try {
       setError('');
-      const res = await axios.post('http://localhost:3000/api/user/verifyotp', {
-        email,
-        otp: enteredOtp
-      });
+      const res = await verifyOtp(email, enteredOtp); // ✅ Render backend se connect
 
-      if (res.data.message === "OTP verified successfully") {
+      if (res.message === "OTP verified successfully") {
         navigate('/password', { state: { email } });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.message || "Something went wrong");
     }
   };
 

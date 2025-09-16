@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { sendOtp } from '../api'; // api.js ka path
 
 export default function SendOtp() {
   const [email, setEmail] = useState('');
@@ -8,7 +9,6 @@ export default function SendOtp() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // ✅ Handle Send OTP
   const handleSendOtp = async () => {
     if (!email) {
       setError("Email is required");
@@ -19,16 +19,12 @@ export default function SendOtp() {
       setLoading(true);
       setError('');
 
-      // ✅ Backend route using Vite proxy
-      // Frontend: 5173, backend: 3000 → proxy in vite.config.js handles /api
-      const res = await axios.post("/api/user/send-otp", { email });
-
-      if (res.data.message === "OTP sent successfully") {
-        // Email aur OTP verify screen pe bhej do
+      const res = await sendOtp(email); // ✅ Render backend se connect
+      if (res.message === "OTP sent successfully") {
         navigate("/reset", { state: { email } });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
