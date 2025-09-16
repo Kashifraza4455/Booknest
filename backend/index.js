@@ -16,7 +16,7 @@ const server = http.createServer(app);
 // ✅ CORS setup
 const allowedOrigins = [
   'http://localhost:5173', // local dev frontend
-  'https://booknest-screens-git-main-kashifrazas-projects.vercel.app' // Vercel frontend
+  'https://booknest-screens.vercel.app/' // Vercel frontend
 ];
 
 app.use(cors({
