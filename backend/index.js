@@ -15,14 +15,14 @@ const server = http.createServer(app);
 
 // ✅ CORS setup
 const allowedOrigins = [
-  'http://localhost:5173', // local dev frontend
-  'https://booknest-screens.vercel.app/' // Vercel frontend
+  'http://localhost:5173', // local dev
+  'https://booknest-umber.vercel.app' // new Vercel deploy domain
 ];
 
 app.use(cors({
-  origin: function(origin, callback){
-    if(!origin) return callback(null, true); // allow Postman / curl
-    if(allowedOrigins.indexOf(origin) === -1){
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman/curl
+    if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
@@ -31,24 +31,25 @@ app.use(cors({
   credentials: true
 }));
 
+// Static files
 app.use('/images', express.static('public/images'));
+app.use('/uploads', express.static('uploads'));
 
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
-app.use('/api/check', checkRoute);
 
-// Connect to database
+// Routes
+app.use('/api/check', checkRoute);
+app.use('/api/user', userRoute);
+app.use('/api/books', bookRoute);
+app.use('/api/wallet', walletRoute);
+
+// DB connection
 connectDB();
 
 // Socket init
 initSocket(server);
-
-// ✅ Routes
-app.use('/api/user', userRoute);
-app.use('/api/books', bookRoute);
-app.use('/api/wallet', walletRoute);
 
 // Home route
 app.get('/', (req, res) => {
