@@ -5,13 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { changePassword } from '../api'; // api.js ka path
 
 export default function BookNestScreen() {
-   const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,21 +20,21 @@ export default function BookNestScreen() {
 
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
-      const token = localStorage.getItem('token'); // JWT from login
+      const token = localStorage.getItem("token");
       if (!token) {
         setError("You must be logged in");
         setLoading(false);
         return;
       }
 
-      const res = await changePassword(oldPassword, newPassword, token); // ✅ Render backend se connect
+      const res = await changePassword(oldPassword, newPassword, token);
 
-      alert(res.message);
+      alert(res.data.message); // ✅ backend ka response
       navigate("/login");
     } catch (err) {
-      setError(err.message || "Something went wrong");
+      setError(err.response?.data?.message || err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

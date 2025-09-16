@@ -29,14 +29,16 @@ export const verifyOtp = async (email, otp) => {
   const res = await axios.post(`${backend}/api/user/verifyotp`, { email, otp });
   return res.data;
 };
-// Change password
 export const changePassword = async (oldPassword, newPassword, token) => {
-  const res = await axios.post(
+  return axios.post(
     `${backend}/api/user/change-password`,
-    { oldPassword, newPassword },
-    { headers: { Authorization: `Bearer ${token}` } }
+    { oldPassword, newPassword }, // body
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, // token bhejna zaroori hai
+      },
+    }
   );
-  return res.data;
 };
 
 
