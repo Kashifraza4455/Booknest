@@ -6,7 +6,7 @@ const backend = import.meta.env.VITE_RENDER_BACKEND;
 
 // Signup
 export const signupUser = async (payload) => {
-  return axios.post(`${backend}/api/user/signup`, payload);
+  return axios.post(`${backend}/api/user/register`, payload);
 };
 
 // Login
@@ -16,7 +16,7 @@ export const loginUser = async (payload) => {
 
 // Send verification / OTP
 export const sendVerification = async (payload) => {
-  return axios.post(`${backend}/api/user/send-verification`, payload);
+  return axios.post(`${backend}/api/user/sendvarification`, payload);
 };
 
 // Send OTP
