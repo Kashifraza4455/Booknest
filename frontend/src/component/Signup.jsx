@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser, clearError, clearSuccess } from '../store/slices/authSlice';
 import { signupUser as signupAPI } from '../api'; 
+import axios from "axios";
+
 
 const Signup = () => {
   const dispatch = useDispatch();
