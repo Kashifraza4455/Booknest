@@ -31,7 +31,7 @@ const Signup = () => {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
-  
+
   const payload = {
     firstname: formData.firstName,
     lastname: formData.lastName,
@@ -46,10 +46,16 @@ const handleSubmit = async (e) => {
   };
 
   try {
-    const res = await signupAPI(payload); // ✅ backend Render link se connect ho gaya
+    const res = await axios.post(
+      `${import.meta.env.VITE_RENDER_BACKEND}/api/user/signup`,
+      payload
+    );
 
-    if (res.token) localStorage.setItem('token', res.token);
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token);
+    }
 
+    // Reset form
     setFormData({
       firstName: '',
       lastName: '',
@@ -60,9 +66,9 @@ const handleSubmit = async (e) => {
       password: ''
     });
 
-    setTimeout(() => navigate('/login'), 1500);
+    setTimeout(() => navigate("/login"), 1500);
   } catch (err) {
-    console.error('Signup failed:', err);
+    console.error("Signup failed:", err);
   }
 };
 

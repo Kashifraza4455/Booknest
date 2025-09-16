@@ -1,40 +1,38 @@
 // src/api.js
 import axios from "axios";
 
-const API = process.env.REACT_APP_API_URL; // Vercel environment variable
+// Base URL from environment
+const backend = import.meta.env.VITE_RENDER_BACKEND;
 
 // Signup
 export const signupUser = async (payload) => {
-  const res = await axios.post(`${API}/signup`, payload);
-  return res.data;
+  return axios.post(`${backend}/api/user/signup`, payload);
 };
 
 // Login
 export const loginUser = async (payload) => {
-  const res = await axios.post(`${API}/login`, payload);
-  return res.data;
+  return axios.post(`${backend}/api/user/login`, payload);
 };
 
-// Send verification email
-export const sendVerification = async (email) => {
-  const res = await axios.post(`${API}/api/user/sendvarification`, { email });
-  return res.data;
+// Send verification / OTP
+export const sendVerification = async (payload) => {
+  return axios.post(`${backend}/api/user/send-verification`, payload);
 };
 
 // Send OTP
 export const sendOtp = async (email) => {
-  const res = await axios.post(`${API}/api/user/send-otp`, { email });
+  const res = await axios.post(`${backend}/api/user/send-otp`, { email });
   return res.data;
 };
 // Verify OTP
 export const verifyOtp = async (email, otp) => {
-  const res = await axios.post(`${API}/api/user/verifyotp`, { email, otp });
+  const res = await axios.post(`${backend}/api/user/verifyotp`, { email, otp });
   return res.data;
 };
 // Change password
 export const changePassword = async (oldPassword, newPassword, token) => {
   const res = await axios.post(
-    `${API}/api/user/change-password`,
+    `${backend}/api/user/change-password`,
     { oldPassword, newPassword },
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -44,7 +42,7 @@ export const changePassword = async (oldPassword, newPassword, token) => {
 
 // Fetch global books
 export const getGlobalBooks = async (token) => {
-  const res = await axios.get(`${API}/api/books/global`, {
+  const res = await axios.get(`${backend}/api/books/global`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data.books;
