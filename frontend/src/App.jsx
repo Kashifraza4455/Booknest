@@ -11,7 +11,7 @@ import Signup from "./component/Signup.jsx";
 import Forget from "./component/Forget.jsx";
 import Reset from "./component/Reset.jsx"
 import Password from "./component/Password.jsx"
-import BookList from './component/Booklist.jsx';
+import BookList from './component/BookList.jsx';
 
 // Import your other components
 
