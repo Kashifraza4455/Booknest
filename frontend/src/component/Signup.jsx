@@ -49,7 +49,7 @@ const handleSubmit = async (e) => {
 
   try {
     const res = await axios.post(
-      `${import.meta.env.VITE_RENDER_BACKEND}/api/user/signup`,
+      `${import.meta.env.VITE_RENDER_BACKEND}/api/user/register`,
       payload
     );
 
