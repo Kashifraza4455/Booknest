@@ -62,6 +62,7 @@ exports.createUser = async (req, res) => {
 // Send verification email
 // Send verification email
 exports.sendVerification = async (req, res) => {
+     console.log("📩 Email received for verification:", req.body.email);
     const { email } = req.body;
 
     try {
