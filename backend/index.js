@@ -16,7 +16,7 @@ const server = http.createServer(app);
 // ✅ CORS setup
 const allowedOrigins = [
   'http://localhost:5173', // local dev
-  'https://booknest-umber.vercel.app' // new Vercel deploy domain
+  'https://booknest-screeen.vercel.app/' // new Vercel deploy domain
 ];
 
 app.use(cors({
