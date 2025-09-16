@@ -15,7 +15,7 @@ export const loginUser = async (payload) => {
 };
 
 // Send verification / OTP
-export const sendVerification = async (payload) => {
+export const sendvarification = async (payload) => {
   return axios.post(`${backend}/api/user/sendvarification`, payload);
 };
 

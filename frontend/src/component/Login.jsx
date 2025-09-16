@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import axios from "axios";
 import { loginUser } from "../store/slices/authSlice";
-import {sendVerification } from '../api'; // api.js ka path
+import {sendvarification } from '../api'; // api.js ka path
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -42,7 +42,7 @@ const handleSendVerification = async () => {
   }
   setLoadingVerification(true);
   try {
-    const res = await sendVerification(email); // ✅ api.js se call
+    const res = await sendvarification(email); // ✅ api.js se call
     setVerificationMessage(res.message);
   } catch (err) {
     console.error(err);
