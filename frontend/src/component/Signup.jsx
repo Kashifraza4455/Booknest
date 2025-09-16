@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser, clearError, clearSuccess } from '../store/slices/authSlice';
-import { signupUser as signupAPI } from '../api'; 
+// import { signupUser as signupAPI } from '../api'; 
 import axios from "axios";
-
+import { signupUser as signupAPI } from '../api';
 
 const Signup = () => {
   const dispatch = useDispatch();

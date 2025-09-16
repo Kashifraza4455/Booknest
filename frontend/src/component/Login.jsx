@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+// import axios from "axios";
 import { loginUser } from "../store/slices/authSlice";
 import {sendVerification } from '../api'; // api.js ka path
 
