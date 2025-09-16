@@ -13,11 +13,24 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// CORS
+// ✅ CORS setup
+const allowedOrigins = [
+  'http://localhost:5173', // local dev frontend
+  'https://booknest-screen-46n7ig8ql-kashifrazas-projects.vercel.app' // Vercel frontend
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // frontend URL
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true); // allow Postman / curl
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
+
 app.use('/images', express.static('public/images'));
 
 // Body parser
@@ -25,6 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use('/api/check', checkRoute);
+
 // Connect to database
 connectDB();
 
@@ -32,7 +46,6 @@ connectDB();
 initSocket(server);
 
 // ✅ Routes
-// Change backend route to /api/user so frontend /api/user/send-otp works
 app.use('/api/user', userRoute);
 app.use('/api/books', bookRoute);
 app.use('/api/wallet', walletRoute);
@@ -41,10 +54,10 @@ app.use('/api/wallet', walletRoute);
 app.get('/', (req, res) => {
   res.send('Welcome here');
 });
+
 app.get('/api/books', (req, res) => {
   res.json([{ id: 1, title: 'Book 1' }, { id: 2, title: 'Book 2' }]);
 });
-
 
 // Start server
 server.listen(process.env.PORT, () => {
