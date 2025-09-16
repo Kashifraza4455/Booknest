@@ -6,12 +6,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { store } from './store/store';
 import AllBooks from './Allbooks.jsx'
-import Login from "./commponent/Login.jsx";
-import Signup from "./commponent/Signup.jsx";
-import Forget from "./commponent/Forget.jsx";
-import Reset from "./commponent/Reset.jsx"
-import Password from "./commponent/Password.jsx"
-import BookList from './commponent/Booklist.jsx';
+import Login from "./component/Login.jsx";
+import Signup from "./component/Signup.jsx";
+import Forget from "./component/Forget.jsx";
+import Reset from "./component/Reset.jsx"
+import Password from "./component/Password.jsx"
+import BookList from './component/Booklist.jsx';
 
 // Import your other components
 
