@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "prod": "cross-env NODE_ENV=production node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -28,5 +30,8 @@
     "socket": "^0.14.43",
     "socket.io": "^4.8.1",
     "stripe": "^17.7.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.0.0"
   }
 }

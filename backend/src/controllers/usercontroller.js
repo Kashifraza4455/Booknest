@@ -74,7 +74,8 @@ exports.sendVerification = async (req, res) => {
 
         // ✅ Add verification link here
         // userController.js
-const verificationLink = `${process.env.BACKEND_URL}/api/user/verify/${token}`;
+        const verificationLink = `${process.env.BACKEND_URL}/api/user/verify/${token}`;
+
 
         // Send email
         await transporter.sendMail({
