@@ -11,8 +11,9 @@ if(env === "production") {
 }
 
 // Test
-console.log("Mail:", process.env.SENDER_MAIL);
-console.log("Password:", process.env.SENDER_PASSWORD);
+console.log("SENDER_MAIL:", process.env.SENDER_MAIL);
+console.log("SENDER_PASSWORD:", process.env.SENDER_PASSWORD ? "Loaded ✅" : "Missing ❌");
+
 
 // Nodemailer setup
 const nodemailer = require("nodemailer");
