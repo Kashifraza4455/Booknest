@@ -2,12 +2,12 @@ const dotenv = require("dotenv");         // Must be top
 dotenv.config({ path: ".env.dev" }); 
 const env = process.env.NODE_ENV || "development";  // default local
 
-if(env === "production") {
-    dotenv.config({ path: ".env.prod" });
-    console.log("Production env loaded");
+if (env === "production") {
+  dotenv.config({ path: ".env.prod" });
+  console.log("Production env loaded");
 } else {
-    dotenv.config({ path: ".env.dev" });
-    console.log("Development env loaded");
+  dotenv.config({ path: ".env.dev" });
+  console.log("Development env loaded");
 }
 
 // Test
