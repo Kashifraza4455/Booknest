@@ -68,6 +68,8 @@ exports.sendVerification = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ message: 'User not found' });
+        console.log("BACKEND_URL from env:", process.env.BACKEND_URL);
+
 
         // JWT token valid for 30 days
         const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '30d' });
