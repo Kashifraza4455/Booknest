@@ -1,16 +1,17 @@
-// index.js
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 dotenv.config();
-const express = require('express');
-const http = require('http');
-const cors = require('cors');
-const connectDB = require('./db/database');
-const userRoute = require('./src/routes/userroute');
-const bookRoute = require('./src/routes/bookroute');
-const walletRoute = require('./src/routes/walletroutes');
-const checkRoute = require('./src/routes/checkroute');
-const { initSocket } = require('./src/functions/socket');
-const path = require('path');
+
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import connectDB from './db/database.js';
+import userRoute from './src/routes/userroute.js';
+import bookRoute from './src/routes/bookroute.js';
+import walletRoute from './src/routes/walletroutes.js';
+import checkRoute from './src/routes/checkroute.js';
+import { initSocket } from './src/functions/socket.js';
+import path from 'path';
+
 
 // ✅ Load correct .env file
 const envFile = process.env.NODE_ENV === "production" ? ".env.prod" : ".env.dev";

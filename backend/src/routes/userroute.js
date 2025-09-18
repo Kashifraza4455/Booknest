@@ -1,33 +1,46 @@
-//user route
-const express = require('express'); 
+// src/routes/userroute.js
+import express from 'express';
+import upload from '../middleware/multer.js';
+import * as userController from '../controllers/usercontroller.js';
+import verifyToken from '../middleware/authmiddleware.js';
+import verifyJWT from '../middleware/verifyJWT.js';
+import {
+  addToWishlist,
+  getWishlist,
+  getNotifications,
+  getNumberOfUsers,
+  userEngagement,
+  recentlyRegisteredUsers,
+  getAllUsers,
+  searchUsers,
+  blockUser,
+  approveUser,
+  rejectUser,
+  getRequests
+} from "../controllers/usercontroller.js";
+
 const router = express.Router();
-const upload = require('../middleware/multer');
-const userController = require('../controllers/usercontroller');
-const verifyToken = require('../middleware/authmiddleware');
-const verifyJWT = require('../middleware/verifyJWT');
-router.post('/register', userController.createUser);                //register user
-router.post('/sendvarification', userController.sendVerification); //send verification email
-router.get('/verify/:token', userController.verifyEmail);           //verify email
-router.post('/login', userController.loginUser);                    //login user
-router.get('/getuser',verifyToken, userController.getUserInfo);     //get user info
-router.put('/update-profile',verifyToken, upload.single("profilePic"), userController.uploadProfile);   //update user info
+
+router.post('/register', userController.createUser);                
+router.post('/sendvarification', userController.sendVerification);
+router.get('/verify/:token', userController.verifyEmail);
+router.post('/login', userController.loginUser);
+router.get('/getuser', verifyToken, userController.getUserInfo);
+router.put('/update-profile', verifyToken, upload.single("profilePic"), userController.uploadProfile);
 router.post('/change-password', verifyJWT, userController.changePassword);
-router.post('/send-otp', userController.sendOTP);                      //send otp
-router.post('/verifyotp', userController.verifyOTP);                    //verify otp
-// router.post('/resetpassword', userController.resetPassword);            //reset password
-router.post('/addtowishlist',verifyToken, userController.addToWishlist);    //add to wishlist
-router.get('/getwishlist',verifyToken, userController.getWishlist);     //get wishlist
+router.post('/send-otp', userController.sendOTP);
+router.post('/verifyotp', userController.verifyOTP);
+router.post('/addtowishlist', verifyToken, userController.addToWishlist);
+router.get('/getwishlist', verifyToken, userController.getWishlist);
 
-
-// //admin routes
-router.get('/admin/numberofusers', verifyToken, userController.getnumberofUsers); // get number of total registered users
-router.get('/admin/userengagement', verifyToken, userController.userEngagement); // get user engagement
-router.get('/admin/recentlyrigisteredusers', verifyToken, userController.recentlyRegisteredUsers); // get recently registered users
-router.get('/admin/getallusers', verifyToken, userController.getallusers); // get all users by admin
+// Admin routes
+router.get('/admin/numberofusers', verifyToken, userController.getnumberofUsers);
+router.get('/admin/userengagement', verifyToken, userController.userEngagement);
+router.get('/admin/recentlyrigisteredusers', verifyToken, userController.recentlyRegisteredUsers);
+router.get('/admin/getallusers', verifyToken, userController.getallusers);
 router.post("/admin/searchusers", verifyToken, userController.searchUsers);
-router.put("/admin/blockuser/:id", verifyToken, userController.blockUser); //toggle block user
-router.put("/admin/approveuser/:id", verifyToken, userController.approveUser); //approve user
-router.put("/admin/rejectuser/:id", verifyToken, userController.rejectUser); //reject user
+router.put("/admin/blockuser/:id", verifyToken, userController.blockUser);
+router.put("/admin/approveuser/:id", verifyToken, userController.approveUser);
+router.put("/admin/rejectuser/:id", verifyToken, userController.rejectUser);
 
-
-module.exports = router;
+export default router;

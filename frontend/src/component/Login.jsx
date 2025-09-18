@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import axios from "axios";
 import { loginUser } from "../store/slices/authSlice";
-import {sendVerification } from '../api'; // api.js ka path
+import { sendVerification } from "../api"; // api.js ka path
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -21,47 +20,46 @@ function Login() {
   }, [user, navigate]);
 
   // Handle Login
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const result = await loginUser({ email, password }); // ✅ backend Render se connect
-    console.log("Login successful:", result);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await loginUser({ email, password });
+      console.log("Login successful:", result);
 
-    if (result.token) localStorage.setItem("token", result.token);
+      if (result.token) localStorage.setItem("token", result.token);
 
-    navigate("/booklist");
-  } catch (err) {
-    console.error("Login failed:", err);
-  }
-};
+      navigate("/booklist");
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
+  };
 
-const handleSendVerification = async () => {
-  if (!email) {
-    setVerificationMessage("Please enter your email first");
-    return;
-  }
-  setLoadingVerification(true);
-  try {
-    const res = await sendVerification({ email }); // ✅ api.js se call
-    setVerificationMessage(res.message);
-  } catch (err) {
-    console.error(err);
-    setVerificationMessage(err.message || "Error sending verification email");
-  }
-  setLoadingVerification(false);
-};
-
+  const handleSendVerification = async () => {
+    if (!email) {
+      setVerificationMessage("Please enter your email first");
+      return;
+    }
+    setLoadingVerification(true);
+    try {
+      const res = await sendVerification({ email });
+      setVerificationMessage(res.message);
+    } catch (err) {
+      console.error(err);
+      setVerificationMessage(err.message || "Error sending verification email");
+    }
+    setLoadingVerification(false);
+  };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left Side */}
-      <div className="flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex flex-col justify-center relative overflow-hidden">
-        {/* Background decoration dots */}
+    <div className="flex min-h-screen flex-col md:flex-row overflow-hidden">
+      {/* Left Side (hidden on mobile) */}
+      <div className="hidden md:flex md:flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex-col justify-center relative overflow-hidden">
+        {/* Background decoration dots (only on md+) */}
         <div className="absolute top-20 right-20 w-4 h-4 bg-white opacity-30 rounded-full"></div>
         <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-white opacity-20 rounded-full"></div>
         <div className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-white opacity-25 rounded-full"></div>
         <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-white opacity-30 rounded-full"></div>
-        
+
         <div className="relative z-10">
           {/* Header */}
           <div className="mb-8 text-left">
@@ -71,14 +69,15 @@ const handleSendVerification = async () => {
           </div>
 
           <h2 className="text-4xl font-bold mb-4 leading-tight">
-            Welcome to Your{' '}
+            Welcome to Your{" "}
             <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
               Reading Universe
             </span>
           </h2>
-          
+
           <p className="mb-8 text-xl text-gray-200 leading-relaxed">
-            Discover, share, and connect with fellow book lovers in our vibrant community
+            Discover, share, and connect with fellow book lovers in our vibrant
+            community
           </p>
 
           <div className="flex gap-4 mb-8">
@@ -103,10 +102,12 @@ const handleSendVerification = async () => {
       </div>
 
       {/* Right Side */}
-      <div className="flex-1 flex items-center justify-center p-12 bg-gradient-to-b from-white to-gray-100">
-        <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-8 md:p-12 bg-gradient-to-b from-white to-gray-100">
+        <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
           <h2 className="text-2xl font-bold mb-2">Welcome Back</h2>
-          <p className="text-gray-500 mb-6">Log in to share your Books with the world</p>
+          <p className="text-gray-500 mb-6">
+            Log in to share your Books with the world
+          </p>
 
           {/* Error Message */}
           {error && (
@@ -129,7 +130,9 @@ const handleSendVerification = async () => {
             </div>
 
             <div>
-              <label className="block font-medium mb-1 text-left">Password *</label>
+              <label className="block font-medium mb-1 text-left">
+                Password *
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -151,7 +154,9 @@ const handleSendVerification = async () => {
             <button
               type="submit"
               className={`w-full py-2 rounded-lg text-white font-semibold ${
-                loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                loading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
               }`}
               disabled={loading}
             >
@@ -169,7 +174,9 @@ const handleSendVerification = async () => {
               {loadingVerification ? "Sending..." : "Send Verification Link"}
             </button>
 
-            <Link to="/forget" className="text-blue-500">Forget Password?</Link>
+            <Link to="/forget" className="text-blue-500">
+              Forget Password?
+            </Link>
           </div>
 
           {/* Verification feedback */}
@@ -180,7 +187,10 @@ const handleSendVerification = async () => {
           <div className="text-center mt-4 text-gray-500">
             OR
             <p>
-              Don't have an Account? <Link to="/signup" className="text-blue-500 font-medium">Sign Up</Link>
+              Don't have an Account?{" "}
+              <Link to="/signup" className="text-blue-500 font-medium">
+                Sign Up
+              </Link>
             </p>
           </div>
         </div>

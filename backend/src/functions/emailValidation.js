@@ -1,11 +1,10 @@
 // utils/validateEmail.js
-
 /**
  * Validates the format of an email address and provides error messages.
  * @param {string} email - The email address to validate.
  * @returns {Object} - An object with `isValid` (boolean) and `error` (string) properties.
  */
-function validateEmail(email) {
+export default function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let error = "";
 
@@ -26,5 +25,3 @@ function validateEmail(email) {
         error
     };
 }
-
-module.exports = validateEmail;

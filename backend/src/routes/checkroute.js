@@ -1,7 +1,8 @@
 // src/routes/checkroute.js
-const express = require('express');
+import express from 'express';
+import Book from '../models/bookmodel.js';
+
 const router = express.Router();
-const Book = require('../models/bookmodel');
 
 router.get('/checkbooks', async (req, res) => {
   try {
@@ -12,4 +13,4 @@ router.get('/checkbooks', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-// import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { sendOtp } from '../api'; // api.js ka path
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { sendOtp } from "../api"; // api.js ka path
 
 export default function SendOtp() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSendOtp = async () => {
@@ -17,9 +16,8 @@ export default function SendOtp() {
 
     try {
       setLoading(true);
-      setError('');
-
-      const res = await sendOtp(email); // ✅ Render backend se connect
+      setError("");
+      const res = await sendOtp(email);
       if (res.message === "OTP sent successfully") {
         navigate("/reset", { state: { email } });
       }
@@ -31,17 +29,16 @@ export default function SendOtp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-purple-800 flex">
+    <div className="h-screen flex flex-col md:flex-row">
       {/* Left side - Welcome section */}
-      <div className="flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex flex-col justify-center relative overflow-hidden">
+      <div className="hidden md:flex md:flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex-col justify-center relative overflow-hidden">
         {/* Background decoration dots */}
         <div className="absolute top-20 right-20 w-4 h-4 bg-white opacity-30 rounded-full"></div>
         <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-white opacity-20 rounded-full"></div>
         <div className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-white opacity-25 rounded-full"></div>
         <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-white opacity-30 rounded-full"></div>
-        
+
         <div className="relative z-10">
-          {/* Header */}
           <div className="mb-8 text-left">
             <div className="text-4xl mb-2">📚</div>
             <h1 className="text-4xl font-bold mb-2">BookNest</h1>
@@ -49,24 +46,25 @@ export default function SendOtp() {
           </div>
 
           <h2 className="text-4xl font-bold mb-4 leading-tight">
-            Welcome to Your{' '}
+            Welcome to Your{" "}
             <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
               Reading Universe
             </span>
           </h2>
-          
+
           <p className="mb-8 text-xl text-gray-200 leading-relaxed">
-            Discover, share, and connect with fellow book lovers in our vibrant community
+            Discover, share, and connect with fellow book lovers in our vibrant
+            community
           </p>
 
           <div className="flex gap-4 mb-8">
-            <button className="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 transition-all duration-300 px-6 py-3 rounded-lg flex items-center gap-2 border border-white border-opacity-20 hover:border-opacity-40 transform hover:scale-105">
+            <button className="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 transition-all duration-300 px-6 py-3 rounded-lg border border-white border-opacity-20 hover:border-opacity-40 transform hover:scale-105">
               📚 Share Books
             </button>
-            <button className="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 transition-all duration-300 px-6 py-3 rounded-lg flex items-center gap-2 border border-white border-opacity-20 hover:border-opacity-40 transform hover:scale-105">
+            <button className="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 transition-all duration-300 px-6 py-3 rounded-lg border border-white border-opacity-20 hover:border-opacity-40 transform hover:scale-105">
               💬 Connect
             </button>
-            <button className="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 transition-all duration-300 px-6 py-3 rounded-lg flex items-center gap-2 border border-white border-opacity-20 hover:border-opacity-40 transform hover:scale-105">
+            <button className="bg-white bg-opacity-20 backdrop-blur-sm hover:bg-opacity-30 transition-all duration-300 px-6 py-3 rounded-lg border border-white border-opacity-20 hover:border-opacity-40 transform hover:scale-105">
               🌟 Discover
             </button>
           </div>
@@ -81,7 +79,7 @@ export default function SendOtp() {
       </div>
 
       {/* Right side - Send OTP form */}
-      <div className="w-1/2 bg-gray-50 flex flex-col justify-center items-center p-8">
+      <div className="w-full md:w-1/2 bg-gray-50 flex flex-col justify-center items-center p-6 sm:p-8">
         <div className="w-full max-w-sm">
           <div className="mb-8">
             <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200 hover:bg-gray-50">
@@ -90,8 +88,12 @@ export default function SendOtp() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3 text-left">Forgot Password</h2>
-            <p className="text-gray-500 text-base text-left">Enter your Email to reset Password</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3 text-left">
+              Forgot Password
+            </h2>
+            <p className="text-gray-500 text-base text-left">
+              Enter your Email to reset Password
+            </p>
           </div>
 
           <div>
@@ -100,7 +102,9 @@ export default function SendOtp() {
                 Email <span className="text-red-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">✉️</span>
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
+                  ✉️
+                </span>
                 <input
                   type="email"
                   placeholder="Enter your email"

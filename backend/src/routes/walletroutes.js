@@ -1,11 +1,12 @@
-//wallet routes
-const express = require('express');
+import express from 'express';
+import { createWallet, getWallet, withdrawMoney, transferMoney } from '../controllers/walletcontroller.js';
+import verifyToken from '../middleware/authmiddleware.js';
+
 const router = express.Router();
-const walletController = require('../controllers/walletcontroller');
-const verifyToken = require('../middleware/authmiddleware');
 
-router.post('/createwallet', verifyToken, walletController.createWallet); // create wallet for user
-router.get('/getWallet', verifyToken, walletController.getWallet); // deposit money to wallet
-router.post('/withdrawmoney', verifyToken, walletController.withdrawMoney); // withdraw money from wallet
+router.post('/createwallet', verifyToken, createWallet);
+router.get('/getWallet', verifyToken, getWallet);
+router.post('/withdrawmoney', verifyToken, withdrawMoney);
+router.post('/transfermoney', verifyToken, transferMoney);
 
-module.exports = router;
+export default router;

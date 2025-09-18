@@ -1,9 +1,7 @@
-//database connection function
+// db/database.js
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-
-const connectDB = async () => 
-{
+const connectDB = async () => {
     try {
         const conn = await mongoose.connect(process.env.MONGO_URL);
         console.log(`MongoDB connected: ${conn.connection.host}`);
@@ -11,6 +9,6 @@ const connectDB = async () =>
         console.error(`Error: ${error.message}`);
         process.exit(1);
     }
-}
+};
 
-module.exports = connectDB;
+export default connectDB; // <-- ESM export

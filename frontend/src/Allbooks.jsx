@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 // import axios from "axios";
 import { MapPin, BookOpen } from "lucide-react";
+import { getGlobalBooks } from "./api";
 
 export default function AllBooksPage() {
- const [books, setBooks] = useState([]);
+const [books, setBooks] = useState([]);
 
   useEffect(() => {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
+console.log("Token from localStorage:", token); // ✅ Fetch token from localStorage
+      if (!token) {
+        console.error("User not authenticated");
+        return;
+      }
+
       try {
-        const booksData = await getGlobalBooks(token); // ✅ Render backend se connect
+        const booksData = await getGlobalBooks(token); // ✅ Pass token
         setBooks(booksData);
       } catch (err) {
         console.error("Error fetching books:", err);
@@ -17,7 +24,7 @@ export default function AllBooksPage() {
     };
 
     fetchBooks();
-  }, []);
+  }, [])
 
   return (
     <div className="w-full px-6 py-10">

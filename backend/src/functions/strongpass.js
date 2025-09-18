@@ -1,11 +1,11 @@
-// src/utils/passwordUtils.js
+// src/functions/strongpass.js
 
 /**
  * Checks if the provided password is strong.
  * @param {string} password - The password to check.
  * @returns {Object} - An object with `isStrong` (boolean) and `errors` (string) properties.
  */
-function checkStrongPassword(password) {
+export default function checkStrongPassword(password) {
     const errors = [];
 
     if (password.length < 8) {
@@ -29,5 +29,3 @@ function checkStrongPassword(password) {
         errors: errors.length > 0 ? errors.join(' ') : null
     };
 }
-
-module.exports = checkStrongPassword;

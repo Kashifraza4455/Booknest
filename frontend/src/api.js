@@ -1,5 +1,6 @@
 // src/api.js
 import axios from "axios";
+const API_URL = "http://localhost:3000"; // backend URL
 
 // Base URL from environment
 const backend = import.meta.env.VITE_RENDER_BACKEND;
@@ -42,10 +43,17 @@ export const changePassword = async (oldPassword, newPassword, token) => {
 };
 
 
-// Fetch global books
-export const getGlobalBooks = async (token) => {
-  const res = await axios.get(`${backend}/api/books/global`, {
-    headers: { Authorization: `Bearer ${token}` },
+export const getGlobalBooks = async () => {
+  const token = localStorage.getItem("token"); // ✅ token exists
+  if (!token) throw new Error("User not authenticated");
+
+  const response = await axios.get(`${API_URL}/api/books/global`, {
+    headers: {
+      Authorization: `Bearer ${token}` // ✅ Bearer prefix included
+    }
   });
-  return res.data.books;
+
+  return response.data;
 };
+
+

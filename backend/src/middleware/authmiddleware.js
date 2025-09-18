@@ -1,24 +1,23 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv").config();
-//importing verify token
+import jwt from "jsonwebtoken"; // ✅ ESM syntax
+import dotenv from "dotenv";
+dotenv.config(); // Load environment variables
 
 
 const verifyToken = (req, res, next) => {
-    const token = req.header("Authorization")?.split(" ")[1]; // Get token from headers
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return res.status(401).json({ message: "No token provided" });
 
-    if (!token) {
-        return res.status(403).json({ message: "Access denied. No token provided." });
-    }
+  const token = authHeader.split(" ")[1]; // Bearer <token>
+  if (!token) return res.status(401).json({ message: "Token missing" });
 
-    try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        req.user = decoded; // Attach user data to request
-        console.log(req.user);
-        next(); // Proceed to the next middleware/controller
-    } catch (error) {
-        return res.status(401).json({ message: "Invalid token" });
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
 };
 
-// ✅ Export the middleware properly
-module.exports = verifyToken;
+// ✅ Export ESM style
+export default verifyToken;

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-// import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { changePassword } from '../api'; // api.js ka path
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { changePassword } from "../api"; // api.js ka path
 
 export default function BookNestScreen() {
   const [oldPassword, setOldPassword] = useState("");
@@ -10,6 +9,11 @@ export default function BookNestScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChangePassword = async () => {
@@ -31,25 +35,27 @@ export default function BookNestScreen() {
 
       const res = await changePassword(oldPassword, newPassword, token);
 
-      alert(res.data.message); // ✅ backend ka response
+      alert(res.data.message);
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Something went wrong");
+      setError(
+        err.response?.data?.message || err.message || "Something went wrong"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-purple-800 flex">
-      {/* Left Side - Welcome Section */}
-      <div className="flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex flex-col justify-center relative overflow-hidden">
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left Side */}
+      <div className="hidden md:flex flex-1 min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-12 flex-col justify-center relative">
         {/* Background decoration dots */}
         <div className="absolute top-20 right-20 w-4 h-4 bg-white opacity-30 rounded-full"></div>
         <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-white opacity-20 rounded-full"></div>
         <div className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-white opacity-25 rounded-full"></div>
         <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-white opacity-30 rounded-full"></div>
-        
+
         <div className="relative z-10">
           {/* Header */}
           <div className="mb-8 text-left">
@@ -59,14 +65,15 @@ export default function BookNestScreen() {
           </div>
 
           <h2 className="text-4xl font-bold mb-4 leading-tight">
-            Welcome to Your{' '}
+            Welcome to Your{" "}
             <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
               Reading Universe
             </span>
           </h2>
-          
+
           <p className="mb-8 text-xl text-gray-200 leading-relaxed">
-            Discover, share, and connect with fellow book lovers in our vibrant community
+            Discover, share, and connect with fellow book lovers in our vibrant
+            community
           </p>
 
           <div className="flex gap-4 mb-8">
@@ -90,12 +97,16 @@ export default function BookNestScreen() {
         </div>
       </div>
 
-      {/* Right Side - Password Reset Form */}
-      <div className="w-1/2 bg-white flex flex-col justify-center items-center px-12">
+      {/* Right Side */}
+      <div className="w-full md:w-1/2 min-h-screen bg-white flex flex-col justify-center items-center px-12">
         <div className="w-full max-w-xs">
           <div className="mb-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2 text-left">Change Password</h3>
-            <p className="text-gray-500 text-left">Enter your old password and set a new one</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2 text-left">
+              Change Password
+            </h3>
+            <p className="text-gray-500 text-left">
+              Enter your old password and set a new one
+            </p>
           </div>
 
           {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -103,16 +114,19 @@ export default function BookNestScreen() {
           <div className="space-y-6">
             {/* Old Password */}
             <div>
-              <div className="block text-gray-700 font-medium mb-2 text-left">Old Password <span className="text-red-500">*</span></div>
+              <div className="block text-gray-700 font-medium mb-2 text-left">
+                Old Password <span className="text-red-500">*</span>
+              </div>
               <div className="relative">
                 <input
                   type={showOldPassword ? "text" : "password"}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
                   placeholder="Enter old password"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
                 <button
+                  type="button"
                   onClick={() => setShowOldPassword(!showOldPassword)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
@@ -123,16 +137,19 @@ export default function BookNestScreen() {
 
             {/* New Password */}
             <div>
-              <div className="block text-gray-700 font-medium mb-2 text-left">New Password <span className="text-red-500">*</span></div>
+              <div className="block text-gray-700 font-medium mb-2 text-left">
+                New Password <span className="text-red-500">*</span>
+              </div>
               <div className="relative">
                 <input
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
                 <button
+                  type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
@@ -143,20 +160,29 @@ export default function BookNestScreen() {
 
             {/* Confirm Password */}
             <div>
-              <div className="block text-gray-700 font-medium mb-2 text-left">Confirm Password <span className="text-red-500">*</span></div>
+              <div className="block text-gray-700 font-medium mb-2 text-left">
+                Confirm Password <span className="text-red-500">*</span>
+              </div>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
                 <button
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  type="button"
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
                 </button>
               </div>
             </div>

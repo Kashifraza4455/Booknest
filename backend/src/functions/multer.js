@@ -1,6 +1,6 @@
 // config/multer.js
-const multer = require('multer');
-const path = require('path');
+import multer from "multer";
+import path from "path";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -25,4 +25,5 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit per image
 });
 
-module.exports = upload;
+// ✅ ESM style default export
+export default upload;

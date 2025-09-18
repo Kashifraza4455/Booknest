@@ -1,6 +1,9 @@
-const dotenv = require("dotenv");         // Must be top
-dotenv.config({ path: ".env.dev" }); 
-const env = process.env.NODE_ENV || "development";  // default local
+// src/functions/mailer.js
+import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+
+dotenv.config({ path: ".env.dev" });
+const env = process.env.NODE_ENV || "development";
 
 if (env === "production") {
   dotenv.config({ path: ".env.prod" });
@@ -14,10 +17,7 @@ if (env === "production") {
 console.log("SENDER_MAIL:", process.env.SENDER_MAIL);
 console.log("SENDER_PASSWORD:", process.env.SENDER_PASSWORD ? "Loaded ✅" : "Missing ❌");
 
-
 // Nodemailer setup
-const nodemailer = require("nodemailer");
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -32,4 +32,4 @@ transporter.verify((err, success) => {
   else console.log("SMTP Ready");
 });
 
-module.exports = transporter;
+export default transporter;
