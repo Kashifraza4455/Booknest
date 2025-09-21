@@ -187,28 +187,41 @@ export const verifyOTP = async (req, res) => {
 
 // Reset password
 export const resetPassword = async (req, res) => {
-    const { email, newPassword } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ message: "User not found" });
+  const { email, newPassword } = req.body;
 
-        const strongPassword = checkStrongPassword(newPassword);
-        if (!strongPassword.isStrong) return res.status(400).json({ message: 'Password is not strong enough', errors: strongPassword.errors });
-
-        await transporter.sendMail({
-            from: process.env.SENDER_MAIL,
-            to: email,
-            subject: "Password Reset",
-            text: `Your password has been reset successfully.`,
-        });
-
-        const hashpassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashpassword;
-        await user.save();
-        res.status(200).json({ message: "Password reset successfully" });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+  try {
+    // 🔍 Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // ✅ Check password strength
+    const strongPassword = strongpass(newPassword);
+    if (!strongPassword.isStrong) {
+      return res.status(400).json({
+        message: "Password is not strong enough",
+        errors: strongPassword.errors,
+      });
+    }
+
+    // 🔑 Hash password & save
+    const hashpassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashpassword;
+    await user.save();
+
+    // 📩 Send confirmation mail
+    await transporter.sendMail({
+      from: process.env.SENDER_MAIL,
+      to: email,
+      subject: "Password Reset",
+      text: `Your password has been reset successfully.`,
+    });
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 
@@ -231,6 +244,17 @@ export const addToWishlist = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
+};
+// usercontroller.js
+export const getUserInfo = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // Get user's wishlist

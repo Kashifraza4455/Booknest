@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "../api"; // api.js ka path
+import { resetPassword } from "../api"; // api.js ka path
 
 export default function BookNestScreen() {
   const [oldPassword, setOldPassword] = useState("");

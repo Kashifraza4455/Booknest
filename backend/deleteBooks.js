@@ -1,27 +1,18 @@
-const mongoose = require("mongoose");
-const Book = require("./src/models/bookmodel");
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
-mongoose
-  .connect(
-    "mongodb+srv://kashifraza:kashifraza1234@cluster0.3mgx5r4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
-  .then(async () => {
-    console.log("MongoDB connected");
+dotenv.config({ path: ".env.dev" });
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
-    const books = await Book.find();
-    console.log(`Books found: ${books.length}`);
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YzdkMmNhNGY3NGFjZWZiNzFiMWM3YiIsImlhdCI6MTc1NzkyNjA5MCwiZXhwIjoxNzU4NTMwODkwfQ.hjgyk4wYGhA08bVQpgwLn5OZzoCi2EhpXx8rlCuWUho"; 
 
-    // Ye aapki 5 images ka array
-    const images = ["book1.jpg", "book2.avif", "book3.jpeg", "book4.jpeg", "book5.jpeg"];
 
-    for (let i = 0; i < books.length; i++) {
-      const imageFileName = images[i % images.length]; // cyclic assignment
-      books[i].imageFileName = imageFileName;
-      await books[i].save();
-      console.log(`Updated: ${books[i].title} -> ${imageFileName}`);
-    }
+try {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  console.log("✅ Verified:", decoded);
+} catch (err) {
+  console.error("❌ JWT Verify Error:", err.message);
+}
 
-    console.log("✅ All books updated with repeated images!");
-    process.exit();
-  })
-  .catch((err) => console.log(err));
+
+

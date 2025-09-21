@@ -7,24 +7,26 @@ export default function AllBooksPage() {
 const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      const token = localStorage.getItem("token");
-console.log("Token from localStorage:", token); // ✅ Fetch token from localStorage
-      if (!token) {
-        console.error("User not authenticated");
-        return;
-      }
+  const fetchBooks = async () => {
+    try {
+      const data = await getGlobalBooks();
+      console.log("Books API Response:", data);
 
-      try {
-        const booksData = await getGlobalBooks(token); // ✅ Pass token
-        setBooks(booksData);
-      } catch (err) {
-        console.error("Error fetching books:", err);
+      if (Array.isArray(data)) {
+        setBooks(data);
+      } else if (Array.isArray(data.books)) {
+        setBooks(data.books);
+      } else {
+        setBooks([]); // fallback
       }
-    };
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setBooks([]);
+    }
+  };
 
-    fetchBooks();
-  }, [])
+  fetchBooks();
+}, []);
 
   return (
     <div className="w-full px-6 py-10">

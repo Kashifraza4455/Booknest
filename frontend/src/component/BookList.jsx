@@ -12,18 +12,26 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const booksData = await getGlobalBooks(token);
-        setBooks(booksData);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-      }
-    };
+  const fetchBooks = async () => {
+    try {
+      const data = await getGlobalBooks();
+      console.log("Books API Response:", data);
 
-    fetchBooks();
-  }, []);
+      if (Array.isArray(data)) {
+        setBooks(data);
+      } else if (Array.isArray(data.books)) {
+        setBooks(data.books);
+      } else {
+        setBooks([]); // fallback
+      }
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setBooks([]);
+    }
+  };
+
+  fetchBooks();
+}, []);
 
   return (
     <div className="min-h-screen">

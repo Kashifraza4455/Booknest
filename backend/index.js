@@ -11,6 +11,11 @@ import walletRoute from './src/routes/walletroutes.js';
 import checkRoute from './src/routes/checkroute.js';
 import { initSocket } from './src/functions/socket.js';
 import path from 'path';
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 
 // ✅ Load correct .env file
@@ -43,7 +48,7 @@ app.use(cors({
 app.options("*", cors());
 
 // ✅ Static folders
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ✅ Body parser
