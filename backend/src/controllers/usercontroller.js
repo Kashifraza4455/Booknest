@@ -8,6 +8,7 @@ import validateEmail from "../functions/emailValidation.js";
 import strongpass from'../functions/strongpass.js';
 import Notification from '../models/notificationSchema.js';
 import Wallet from '../models/userwallet.js';
+import { checkStrongPassword } from '../utils/validation.js';
 
 
 import dotenv from 'dotenv';
@@ -19,18 +20,30 @@ const frontendUrl = "http://localhost:5173";
 
 // Create user
 export const createUser = async (req, res) => {
+    console.log("Signup request body:", req.body); // 👈 dekho kya aa raha hai frontend se
+
     const { email, password, firstname, lastname, phoneno, address, isadmin } = req.body;
     try {
         const user = await User.findOne({ email });
+        console.log("Existing user found:", user);
+
         if (user) return res.status(400).json({ message: 'User already exists' });
 
         const emailValidation = validateEmail(email);
         if (!emailValidation.isValid) return res.status(400).json({ message: 'Invalid email' });
 
         const strongPassword = checkStrongPassword(password);
-        if (!strongPassword.isStrong) return res.status(400).json({ message: 'Password is not strong enough', errors: strongPassword.errors });
+if (!strongPassword.isStrong) {
+  return res.status(400).json({ 
+    message: 'Password is not strong enough', 
+    errors: strongPassword.errors 
+  });
+}
+
 
         const hashpassword = await bcrypt.hash(password, 10);
+        console.log("Password hashed:", hashpassword);
+
         const newUser = await User.create({
             isadmin: isadmin,
             firstname,
@@ -47,14 +60,21 @@ export const createUser = async (req, res) => {
                 ip: req.ip
             }
         });
+        console.log("New user created:", newUser);
 
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        console.log("JWT created:", token);
 
         res.status(201).json({ message: 'User created successfully', data: newUser, token });
     } catch (error) {
+        console.error("Signup Error:", error); // 👈 ye exact error show karega
         res.status(500).json({ message: error.message });
     }
 };
+
+
+
+
 
 // Send verification email
 export const sendVerification = async (req, res) => {
