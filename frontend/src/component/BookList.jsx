@@ -53,7 +53,7 @@ export default function HomePage() {
               <Link to="/allbooks" className="hover:text-blue-600 transition">Messages</Link>
             </li>
             <li>
-              <Link to="/allbooks" className="hover:text-blue-600 transition">Books</Link>
+              <Link to="/allbooks" className="hover:text-blue-600 transition">BookS</Link>
             </li>
           </ul>
 
