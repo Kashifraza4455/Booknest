@@ -55,7 +55,7 @@ app.options("*", (req, res) => {
 
 
 // ✅ Static folders
-app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ✅ Body parser

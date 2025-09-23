@@ -122,7 +122,7 @@ export default function HomePage() {
                     Rs {book.price}
                   </span>
                   <img
-                    src={`http://localhost:3000/images/${book.imageFileName}`}
+                    src={`${import.meta.env.VITE_BACKEND_URL}/images/${book.imageFileName}`}
                     alt={book.title}
                     className="w-full h-48 sm:h-60 object-contain rounded-xl mb-3"
                   />
