@@ -180,6 +180,8 @@ export const verifyOTP = async (req, res) => {
 // ----------------------------
 export const resetPassword = async (req, res) => {
   const {newPassword } = req.body;   // 👈 oldPassword add
+  console.log("🟢 resetPassword payload:", req.body);
+  console.log("🟢 req.user:", req.user);
   try {
     const userId = req.user.id;
     const user = await User.findById(userId);

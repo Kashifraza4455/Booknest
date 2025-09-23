@@ -61,21 +61,13 @@ export const verifyOtp = async (email, otp) => {
 
 // Reset Password
 export const resetPassword = async (newPassword, token) => {
-  try {
-    const res = await axios.post(
-      `${backend}/api/user/resetPassword`,
-      { newPassword },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ token header
-        },
-      }
-    );
-    return res.data;
-  } catch (err) {
-    throw err.response?.data || err.message;
-  }
+  return axios.post(
+    `${backend}/api/user/resetPassword`,
+    { newPassword }, // ✅ sirf newPassword bhejna hai
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
 };
+
 
 // ====================== Books APIs ======================
 
