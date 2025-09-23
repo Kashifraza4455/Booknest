@@ -15,34 +15,21 @@ export default function BookNestScreen() {
   const navigate = useNavigate();
 
 const handleChangePassword = async () => {
-  if (newPassword !== confirmPassword) {
-    setError("Passwords do not match");
-    return;
-  }
-
   const token = localStorage.getItem("token");
   if (!token) {
-    setError("You must be logged in");
+    alert("You must be logged in");
     return;
   }
 
   try {
-    setLoading(true);
-    setError("");
-
-    // ✅ Call resetPassword
-    const res = await resetPassword( newPassword, token);
-
-    console.log("Password reset response:", res);
-    alert(res.message || "Password reset successfully");
-    navigate("/login"); // Reset ke baad login page bhejo
-  } catch (err) {
-    console.error("Reset error:", err);
-    setError(err.message || "Something went wrong");
-  } finally {
-    setLoading(false);
+    const response = await resetPassword(newPassword, token);
+    alert(response.message || "Password reset successfully");
+    navigate("/login");
+  } catch (error) {
+    alert(error.message || "Something went wrong");
   }
 };
+
 
 
 

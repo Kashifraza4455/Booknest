@@ -6,7 +6,6 @@ const backend = import.meta.env.VITE_BACKEND_URL;
 // ====================== User APIs ======================
 
 // Signup
-console.log("Backend URL in frontend:", backend);
 export const signupUser = async (payload) => {
   try {
     const res = await axios.post(`${backend}/api/user/register`, payload);
@@ -61,16 +60,21 @@ export const verifyOtp = async (email, otp) => {
 
 // Reset Password
 export const resetPassword = async (newPassword, token) => {
-  const res = await axios.post(
-    `${backend}/api/user/resetPassword`,
-    { newPassword },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return res.data;
+  try {
+    const res = await axios.post(
+      `${backend}/api/user/resetPassword`, // POST route
+      { newPassword }, // body me sirf naya password
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // JWT token required
+        },
+      }
+    );
+    return res.data; // { message: "Password reset successfully" }
+  } catch (err) {
+    console.error("Reset error:", err.response?.data || err.message);
+    throw err.response?.data || err.message;
+  }
 };
 
 
