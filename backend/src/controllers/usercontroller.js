@@ -179,11 +179,17 @@ export const verifyOTP = async (req, res) => {
 // Reset Password
 // ----------------------------
 export const resetPassword = async (req, res) => {
-  const { newPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;   // 👈 oldPassword add
   try {
     const userId = req.user.id;
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
+
+    // 👇 Pehle purana password match check karo
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
 
     const strongPassword = strongpass(newPassword);
     if (!strongPassword.isStrong) {
