@@ -60,11 +60,11 @@ export const verifyOtp = async (email, otp) => {
 };
 
 // Reset Password
-export const resetPassword = async (oldPassword, newPassword, token) => {
+export const resetPassword = async (newPassword, token) => {
   try {
     const res = await axios.post(
       `${backend}/api/user/resetPassword`,
-      { oldPassword, newPassword },
+      { newPassword },
       {
         headers: {
           Authorization: `Bearer ${token}`, // ✅ token header

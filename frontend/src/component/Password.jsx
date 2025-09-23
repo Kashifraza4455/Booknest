@@ -4,13 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { resetPassword } from "../api"; // api.js ka path
 
 export default function BookNestScreen() {
-  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -33,7 +31,7 @@ const handleChangePassword = async () => {
     setError("");
 
     // ✅ Call resetPassword
-    const res = await resetPassword(oldPassword, newPassword, token);
+    const res = await resetPassword( newPassword, token);
 
     console.log("Password reset response:", res);
     alert(res.message || "Password reset successfully");
