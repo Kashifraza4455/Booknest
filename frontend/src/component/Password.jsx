@@ -16,35 +16,39 @@ export default function BookNestScreen() {
 
   const navigate = useNavigate();
 
-  const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+const handleChangePassword = async () => {
+  if (newPassword !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
 
-    try {
-      setLoading(true);
-      setError("");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setError("You must be logged in");
+    return;
+  }
 
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setError("You must be logged in");
-        setLoading(false);
-        return;
-      }
+  try {
+    setLoading(true);
+    setError("");
 
-      const res = await changePassword(oldPassword, newPassword, token);
+    // ✅ Pass token in Authorization header
+    const res = await resetPassword(oldPassword, newPassword, token);
 
-      alert(res.data.message);
-      navigate("/login");
-    } catch (err) {
-      setError(
-        err.response?.data?.message || err.message || "Something went wrong"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log("Password reset response:", res.data);
+    alert(res.data.message || "Password reset successfully");
+    navigate("/login");
+  } catch (err) {
+    console.error("Reset error:", err.response?.data || err.message);
+    setError(err.response?.data?.message || err.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">

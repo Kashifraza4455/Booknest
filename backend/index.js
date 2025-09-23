@@ -33,6 +33,7 @@ const allowedOrigins = [
   'https://booknest-umber.vercel.app'    // Another Vercel frontend
 ];
 
+
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {

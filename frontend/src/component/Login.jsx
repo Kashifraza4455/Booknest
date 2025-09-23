@@ -20,35 +20,44 @@ function Login() {
   }, [user, navigate]);
 
   // Handle Login
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const result = await loginUser({ email, password });
-      console.log("Login successful:", result);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const actionResult = await dispatch(loginUser({ email, password })).unwrap();
+    console.log("Login successful:", actionResult); // ab backend response aayega { token, user }
 
-      if (result.token) localStorage.setItem("token", result.token);
+    if (actionResult.token) localStorage.setItem("token", actionResult.token);
+    navigate("/booklist");
+  } catch (err) {
+    console.error("Login failed:", err);
+  }
+};
 
-      navigate("/booklist");
-    } catch (err) {
-      console.error("Login failed:", err);
-    }
-  };
 
-  const handleSendVerification = async () => {
-    if (!email) {
-      setVerificationMessage("Please enter your email first");
-      return;
-    }
-    setLoadingVerification(true);
-    try {
-      const res = await sendVerification({ email });
-      setVerificationMessage(res.message);
-    } catch (err) {
-      console.error(err);
-      setVerificationMessage(err.message || "Error sending verification email");
-    }
+
+
+const handleSendVerification = async () => {
+  if (!email) {
+    setVerificationMessage("Please enter your email first");
+    return;
+  }
+
+  setLoadingVerification(true);
+  try {
+    const frontendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    // Pass email as string, frontendUrl separately
+    const res = await sendVerification(email, frontendUrl);
+
+    setVerificationMessage(res.message);
+  } catch (err) {
+    console.error("Send verification failed:", err);
+    setVerificationMessage(err.response?.data?.message || err.message || "Error sending verification email");
+  } finally {
     setLoadingVerification(false);
-  };
+  }
+};
+
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row overflow-hidden">

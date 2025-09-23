@@ -8,7 +8,7 @@ import validateEmail from "../functions/emailValidation.js";
 import strongpass from'../functions/strongpass.js';
 import Notification from '../models/notificationSchema.js';
 import Wallet from '../models/userwallet.js';
-import { checkStrongPassword } from '../utils/validation.js';
+import checkStrongPassword  from '../utils/validation.js';
 
 
 import dotenv from 'dotenv';
@@ -19,57 +19,61 @@ const ipaddress = process.env.BASE_URL; // Localhost or production URL
 const frontendUrl = "http://localhost:5173";
 
 // Create user
+console.log("checkStrongPassword function:", checkStrongPassword); 
 export const createUser = async (req, res) => {
-    console.log("Signup request body:", req.body); // 👈 dekho kya aa raha hai frontend se
+  console.log("Signup request body:", req.body);
 
-    const { email, password, firstname, lastname, phoneno, address, isadmin } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        console.log("Existing user found:", user);
+  const { email, password, firstname, lastname, phoneno, address, isadmin } = req.body;
 
-        if (user) return res.status(400).json({ message: 'User already exists' });
+  try {
+    // check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
-        const emailValidation = validateEmail(email);
-        if (!emailValidation.isValid) return res.status(400).json({ message: 'Invalid email' });
+    // email validation
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) return res.status(400).json({ message: 'Invalid email' });
 
-        const strongPassword = checkStrongPassword(password);
-if (!strongPassword.isStrong) {
-  return res.status(400).json({ 
-    message: 'Password is not strong enough', 
-    errors: strongPassword.errors 
-  });
-}
-
-
-        const hashpassword = await bcrypt.hash(password, 10);
-        console.log("Password hashed:", hashpassword);
-
-        const newUser = await User.create({
-            isadmin: isadmin,
-            firstname,
-            lastname,
-            phoneno,
-            email,
-            password: hashpassword,
-            address: {
-                city: address?.city || '',
-                country: address?.country || ''
-            },
-            tosAcceptance: {
-                date: new Date(),
-                ip: req.ip
-            }
-        });
-        console.log("New user created:", newUser);
-
-        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        console.log("JWT created:", token);
-
-        res.status(201).json({ message: 'User created successfully', data: newUser, token });
-    } catch (error) {
-        console.error("Signup Error:", error); // 👈 ye exact error show karega
-        res.status(500).json({ message: error.message });
+    // password strength validation
+    const strongPassword = checkStrongPassword(password);
+    if (!strongPassword.isStrong) {
+      return res.status(400).json({ 
+        message: 'Password is not strong enough', 
+        errors: strongPassword.errors 
+      });
     }
+
+    // hash password
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    // create new user
+    const newUser = await User.create({
+      isadmin: isadmin || false,
+      firstname,
+      lastname,
+      phoneno,
+      email,
+      password: hashPassword,
+      address: {
+        city: address?.city || '',
+        country: address?.country || ''
+      },
+      tosAcceptance: {
+        date: new Date(),
+        ip: req.ip
+      }
+    });
+
+    // create JWT token
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    console.log("New user created:", newUser);
+
+    res.status(201).json({ message: 'User created successfully', data: newUser, token });
+  } catch (error) {
+    console.error("Signup Error:", error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 
@@ -77,43 +81,39 @@ if (!strongPassword.isStrong) {
 
 
 // Send verification email
+
 export const sendVerification = async (req, res) => {
-    const { email } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ message: 'User not found' });
+  try {
+    // ✅ Destructure email and frontendUrl separately
+    const { email, frontendUrl } = req.body;
 
-        const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '30d' });
-        const verificationLink = `${process.env.BACKEND_URL}/api/user/verify/${token}`;
+    // ✅ Find user by email string only
+    const user = await User.findOne({ email: email }); // email string pass karo
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-        await transporter.sendMail({
-            from: process.env.SENDER_MAIL,
-            to: email,
-            subject: "BookNest Account Verification",
-            html: `
-            <div style="background-color: #f6f6f6; padding: 20px;">
-                <div style="background-color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                    <h1>Email Verification</h1>
-                    <p>Please click the button below to verify your email address:</p>
-                    <a href="${verificationLink}" style="background-color: #4CAF50; color: white; padding: 14px 28px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email</a>
-                    <p>If the button doesn't work, copy and paste this link:</p>
-                    <p>${verificationLink}</p>
-                </div>
-            </div>`
-        });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const verificationLink = `${frontendUrl}/api/user/verify/${token}`;
 
-        res.status(200).json({ message: 'Verification email sent successfully' });
-    } catch (error) {
-        console.error("Error sending verification email:", error);
-        res.status(500).json({ message: 'Error sending verification email' });
-    }
+    await transporter.sendMail({
+      from: process.env.SENDER_MAIL,
+      to: email,
+      subject: "BookNest Account Verification",
+      html: `<a href="${verificationLink}">Verify Email</a>`
+    });
+
+    res.status(200).json({ message: 'Verification email sent successfully' });
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    res.status(500).json({ message: 'Error sending verification email' });
+  }
 };
+
 
 // Verify email
 export const verifyEmail = async (req, res) => {
     const { token } = req.params;
     try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findByIdAndUpdate(decoded.id, { isverified: true, status: "Approved" }, { new: true });
 
         if (!user) return res.status(404).json({ message: 'User not found' });
@@ -149,7 +149,7 @@ export const loginUser = async (req, res) => {
 
         await transporter.sendMail({ from: process.env.SENDER_MAIL, to: user.email, subject: "Login Alert", text: `You have logged in successfully.` });
 
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '30d' });
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30d' });
         res.status(200).json({ email: user.email, token, user });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -207,16 +207,14 @@ export const verifyOTP = async (req, res) => {
 
 // Reset password
 export const resetPassword = async (req, res) => {
-  const { email, newPassword } = req.body;
+  const { newPassword } = req.body;
 
   try {
-    // 🔍 Find user
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const userId = req.user.id; // ✅ from middleware
 
-    // ✅ Check password strength
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
     const strongPassword = strongpass(newPassword);
     if (!strongPassword.isStrong) {
       return res.status(400).json({
@@ -225,15 +223,12 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // 🔑 Hash password & save
-    const hashpassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashpassword;
+    user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
-    // 📩 Send confirmation mail
     await transporter.sendMail({
       from: process.env.SENDER_MAIL,
-      to: email,
+      to: user.email,
       subject: "Password Reset",
       text: `Your password has been reset successfully.`,
     });
@@ -243,6 +238,7 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 
 // Add/remove book to/from wishlist

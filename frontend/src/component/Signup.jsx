@@ -2,40 +2,39 @@ import '../App.css';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const backend = import.meta.env.VITE_BACKEND_URL;
+
+
 
 const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   // ✅ Backend-compatible initial state
-  const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    email: '',
-    phoneno: '',
-    password: '',
-    address: {
-      city: '',
-      country: ''
-    },
-    isadmin: false
-  });
+const [formData, setFormData] = useState({
+  firstname: '',
+  lastname: '',
+  email: '',
+  phoneno: '',
+  password: '',
+  address: { city: '', country: '' }
+});
+
 
   // ✅ Input handler
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
 
-    if (name === 'city' || name === 'country') {
-      setFormData(prev => ({
-        ...prev,
-        address: { ...prev.address, [name]: value }
-      }));
-    } else if (name === 'phone') {
-      setFormData(prev => ({ ...prev, phoneno: value }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  if (name === "city" || name === "country") {
+    setFormData(prev => ({
+      ...prev,
+      address: { ...prev.address, [name]: value }
+    }));
+  } else {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+};
+
 
   // ✅ Submit handler
 const handleSubmit = async (e) => {
@@ -43,12 +42,13 @@ const handleSubmit = async (e) => {
   console.log("Submitting formData:", formData); // ✅ check kya ja raha hai
 
   try {
-    const res = await axios.post(
-      "https://booknest-69xo.onrender.com/api/user/register",
-      formData,
-      { headers: { "Content-Type": "application/json" } } // ensure JSON
-    );
+   const res = await axios.post(
+  `${backend}/api/user/register`,
+  formData,
+  { headers: { "Content-Type": "application/json" } }
+);
     console.log("Signup success:", res.data);
+     navigate("/login");
   } catch (err) {
     console.error("Signup failed:", err.response?.data || err.message); // show backend error
   }

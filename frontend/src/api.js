@@ -16,9 +16,17 @@ export const loginUser = async (payload) => {
   return axios.post(`${backend}/api/user/login`, payload);
 };
 
-// Send verification email
-export const sendVerification = async (payload) => {
-  return axios.post(`${backend}/api/user/sendvarification`, payload);
+export const sendVerification = async (email, frontendUrl) => {
+  try {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const res = await axios.post(`${backendUrl}/api/user/sendvarification`, {
+      email,        // ✅ string
+      frontendUrl,  // ✅ string
+    });
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
 };
 
 // Send OTP
@@ -34,13 +42,13 @@ export const verifyOtp = async (email, otp) => {
 };
 
 // Reset Password
-export const resetPassword = async (oldPassword, newPassword, token) => {
+export const resetPassword = (oldPassword, newPassword, token) => {
   return axios.post(
     `${backend}/api/user/resetPassword`,
-    { oldPassword, newPassword }, // body
+    { oldPassword, newPassword },
     {
       headers: {
-        Authorization: `Bearer ${token}`, // token bhejna zaroori hai
+        Authorization: `Bearer ${token}`, // ✅ header me token
       },
     }
   );

@@ -1,4 +1,5 @@
-function checkStrongPassword(password) {
+// utils/validation.js
+export default function checkStrongPassword(password) {
   const errors = [];
   if (password.length < 6) errors.push("Password too short");
   if (!/[A-Z]/.test(password)) errors.push("Missing uppercase letter");
@@ -11,3 +12,9 @@ function checkStrongPassword(password) {
     errors
   };
 }
+
+// optional email validator
+export const validateEmail = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return { isValid: regex.test(email) };
+};
