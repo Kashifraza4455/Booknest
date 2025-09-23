@@ -35,22 +35,28 @@ const handleInputChange = (e) => {
   }
 };
 
-
-  // ✅ Submit handler
+// ✅ Submit handler
 const handleSubmit = async (e) => {
   e.preventDefault();
   console.log("Submitting formData:", formData); // ✅ check kya ja raha hai
 
   try {
-   const res = await axios.post(
-  `${backend}/api/user/register`,
-  formData,
-  { headers: { "Content-Type": "application/json" } }
-);
+    const res = await axios.post(
+      `${backend}/api/user/register`,
+      formData,
+      { headers: { "Content-Type": "application/json" } }
+    );
     console.log("Signup success:", res.data);
-     navigate("/login");
+    alert(res.data.message || "Signup successful");
+    navigate("/login"); // redirect to login page
   } catch (err) {
-    console.error("Signup failed:", err.response?.data || err.message); // show backend error
+    console.error(
+      "Signup failed:",
+      err.response?.data?.message || err.message
+    );
+    alert(
+      err.response?.data?.message || err.message || "Signup failed"
+    );
   }
 };
 

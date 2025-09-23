@@ -1,27 +1,36 @@
-// src/api.js
 import axios from "axios";
 
-// ✅ Base URL from environment
+// ✅ Base URL from environment (dev / production)
 const backend = import.meta.env.VITE_BACKEND_URL;
 
 // ====================== User APIs ======================
 
 // Signup
 export const signupUser = async (payload) => {
-  return axios.post(`${backend}/api/user/register`, payload);
+  try {
+    const res = await axios.post(`${backend}/api/user/register`, payload);
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
 };
 
 // Login
 export const loginUser = async (payload) => {
-  return axios.post(`${backend}/api/user/login`, payload);
+  try {
+    const res = await axios.post(`${backend}/api/user/login`, payload);
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
 };
 
+// Send Verification Email
 export const sendVerification = async (email, frontendUrl) => {
   try {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const res = await axios.post(`${backendUrl}/api/user/sendvarification`, {
-      email,        // ✅ string
-      frontendUrl,  // ✅ string
+    const res = await axios.post(`${backend}/api/user/sendvarification`, {
+      email,        // ✅ string only
+      frontendUrl,  // ✅ frontend URL
     });
     return res.data;
   } catch (err) {
@@ -31,27 +40,40 @@ export const sendVerification = async (email, frontendUrl) => {
 
 // Send OTP
 export const sendOtp = async (email) => {
-  const res = await axios.post(`${backend}/api/user/send-otp`, { email });
-  return res.data;
+  try {
+    const res = await axios.post(`${backend}/api/user/send-otp`, { email });
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
 };
 
 // Verify OTP
 export const verifyOtp = async (email, otp) => {
-  const res = await axios.post(`${backend}/api/user/verifyotp`, { email, otp });
-  return res.data;
+  try {
+    const res = await axios.post(`${backend}/api/user/verifyotp`, { email, otp });
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
 };
 
 // Reset Password
-export const resetPassword = (oldPassword, newPassword, token) => {
-  return axios.post(
-    `${backend}/api/user/resetPassword`,
-    { oldPassword, newPassword },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`, // ✅ header me token
-      },
-    }
-  );
+export const resetPassword = async (oldPassword, newPassword, token) => {
+  try {
+    const res = await axios.post(
+      `${backend}/api/user/resetPassword`,
+      { oldPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ token header
+        },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    throw err.response?.data || err.message;
+  }
 };
 
 // ====================== Books APIs ======================
@@ -59,8 +81,8 @@ export const resetPassword = (oldPassword, newPassword, token) => {
 // Get Global Books
 export const getGlobalBooks = async () => {
   try {
-    const token = localStorage.getItem("token"); // jab login hota hai to token yahan save karo
-    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/books/global`, {
+    const token = localStorage.getItem("token");
+    const res = await axios.get(`${backend}/api/books/global`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -68,7 +90,6 @@ export const getGlobalBooks = async () => {
     return res.data;
   } catch (err) {
     console.error("Error fetching books:", err);
-    throw err;
+    throw err.response?.data || err.message;
   }
 };
-
