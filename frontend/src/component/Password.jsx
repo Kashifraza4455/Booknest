@@ -116,7 +116,7 @@ const handleChangePassword = async () => {
 
           <div className="space-y-6">
             {/* Old Password */}
-            <div>
+            {/* <div>
               <div className="block text-gray-700 font-medium mb-2 text-left">
                 Old Password <span className="text-red-500">*</span>
               </div>
@@ -136,7 +136,7 @@ const handleChangePassword = async () => {
                   {showOldPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* New Password */}
             <div>
