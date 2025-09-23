@@ -8,6 +8,10 @@ import { User } from "lucide-react";
 import { getGlobalBooks } from "../api";
 
 export default function HomePage() {
+  const handleClick = () => {
+    navigate("/login"); // ✅ login page route
+  };
+
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
 
@@ -58,7 +62,8 @@ export default function HomePage() {
           </ul>
 
           {/* User Icon */}
-          <User className="w-6 h-6 text-purple-700 cursor-pointer" />
+          <User className="w-6 h-6 text-purple-700 cursor-pointer" 
+          onClick={handleClick} />
         </nav>
 
         {/* ===== Hero Section ===== */}
