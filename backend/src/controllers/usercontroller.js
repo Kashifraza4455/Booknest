@@ -26,27 +26,18 @@ export const createUser = async (req, res) => {
   const { email, password, firstname, lastname, phoneno, address, isadmin } = req.body;
 
   try {
-    // check if user already exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+    if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-    // email validation
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.isValid) return res.status(400).json({ message: 'Invalid email' });
+    if (!validateEmail(email).isValid) return res.status(400).json({ message: "Invalid email" });
 
-    // password strength validation
     const strongPassword = checkStrongPassword(password);
     if (!strongPassword.isStrong) {
-      return res.status(400).json({ 
-        message: 'Password is not strong enough', 
-        errors: strongPassword.errors 
-      });
+      return res.status(400).json({ message: "Password is not strong enough", errors: strongPassword.errors });
     }
 
-    // hash password
     const hashPassword = await bcrypt.hash(password, 10);
 
-    // create new user
     const newUser = await User.create({
       isadmin: isadmin || false,
       firstname,
@@ -54,173 +45,149 @@ export const createUser = async (req, res) => {
       phoneno,
       email,
       password: hashPassword,
-      address: {
-        city: address?.city || '',
-        country: address?.country || ''
-      },
-      tosAcceptance: {
-        date: new Date(),
-        ip: req.ip
-      }
+      address: { city: address?.city || "", country: address?.country || "" },
+      tosAcceptance: { date: new Date(), ip: req.ip },
     });
 
-    // create JWT token
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
     console.log("New user created:", newUser);
 
-    res.status(201).json({ message: 'User created successfully', data: newUser, token });
+    res.status(201).json({ message: "User created successfully", data: newUser, token });
   } catch (error) {
     console.error("Signup Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-
-
-
-
-// Send verification email
-
+// ----------------------------
+// Send Verification Email
+// ----------------------------
 export const sendVerification = async (req, res) => {
   try {
-    // ✅ Destructure email and frontendUrl separately
     const { email, frontendUrl } = req.body;
+    if (!email || !frontendUrl) return res.status(400).json({ message: "Email and frontendUrl required" });
 
-    // ✅ Find user by email string only
-    const user = await User.findOne({ email: email }); // email string pass karo
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
     const verificationLink = `${frontendUrl}/api/user/verify/${token}`;
 
     await transporter.sendMail({
       from: process.env.SENDER_MAIL,
       to: email,
       subject: "BookNest Account Verification",
-      html: `<a href="${verificationLink}">Verify Email</a>`
+      html: `<div style="text-align:center"><h1>Verify Email</h1><a href="${verificationLink}">Click to Verify</a></div>`,
     });
 
-    res.status(200).json({ message: 'Verification email sent successfully' });
+    res.status(200).json({ message: "Verification email sent successfully" });
   } catch (error) {
     console.error("Error sending verification email:", error);
-    res.status(500).json({ message: 'Error sending verification email' });
+    res.status(500).json({ message: "Error sending verification email" });
   }
 };
 
-
-// Verify email
+// ----------------------------
+// Verify Email
+// ----------------------------
 export const verifyEmail = async (req, res) => {
-    const { token } = req.params;
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findByIdAndUpdate(decoded.id, { isverified: true, status: "Approved" }, { new: true });
+  const { token } = req.params;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByIdAndUpdate(decoded.id, { isverified: true, status: "Approved" }, { new: true });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-        if (!user) return res.status(404).json({ message: 'User not found' });
-
-        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-        res.status(200).send(`
-            <div style="background-color: #f6f6f6; padding: 20px;">
-                <div style="background-color: white; padding: 32px 24px; border-radius: 10px; text-align: center; max-width: 400px; margin: 0 auto;">
-                    <h1>Email Verified!</h1>
-                    <p>Your email has been successfully verified.</p>
-                    <a href="${frontendUrl}/login" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">Return to Login</a>
-                </div>
-            </div>
-        `);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Login user
-export const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: 'User does not exist' });
-        if (!user.isverified) return res.status(400).json({ message: 'Please verify your email' });
-        if (user.isBlocked) return res.status(400).json({ message: 'Your account is suspended' });
-        if (user.status === 'Rejected') return res.status(400).json({ message: 'Your account is rejected' });
-        if (user.status !== 'Approved') return res.status(400).json({ message: 'Your account is under review' });
-
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        if (!isPasswordCorrect) return res.status(400).json({ message: 'Invalid credentials' });
-
-        await transporter.sendMail({ from: process.env.SENDER_MAIL, to: user.email, subject: "Login Alert", text: `You have logged in successfully.` });
-
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30d' });
-        res.status(200).json({ email: user.email, token, user });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    res.status(200).send(`
+      <div style="text-align:center; padding:20px;">
+        <h1>Email Verified!</h1>
+        <p>Your email has been successfully verified.</p>
+        <a href="${frontendUrl}/login" style="padding:10px 20px; background:#4CAF50; color:white; text-decoration:none;">Return to Login</a>
+      </div>
+    `);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // ----------------------------
-// OTP FUNCTIONS
+// Login User
+// ----------------------------
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User does not exist" });
+    if (!user.isverified) return res.status(400).json({ message: "Please verify your email" });
+    if (user.isBlocked) return res.status(400).json({ message: "Your account is suspended" });
+    if (user.status === "Rejected") return res.status(400).json({ message: "Your account is rejected" });
+    if (user.status !== "Approved") return res.status(400).json({ message: "Your account is under review" });
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+
+    await transporter.sendMail({ from: process.env.SENDER_MAIL, to: user.email, subject: "Login Alert", text: "You have logged in successfully." });
+
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    res.status(200).json({ email: user.email, token, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ----------------------------
+// OTP
 // ----------------------------
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 export const sendOTP = async (req, res) => {
-    const { email } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ message: "User not found" });
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-        const otp = generateOTP();
-        const newotp = await otpmodel.create({ email, otp });
+    const otp = generateOTP();
+    const newotp = await otpmodel.create({ email, otp });
 
-        await transporter.sendMail({
-            from: process.env.SENDER_MAIL,
-            to: email,
-            subject: "Password Reset OTP",
-            html: `<div style="background-color: #f6f6f6; padding: 20px;">
-                    <div style="background-color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                        <h1>Password Reset OTP</h1>
-                        <p>Your One-Time Password (OTP) for password reset is:</p>
-                        <div style="background-color: #f8f8f8; padding: 15px; border-radius: 5px; margin: 20px auto; font-size: 24px; font-weight: bold; color: #4CAF50; letter-spacing: 2px;">
-                            ${newotp.otp}
-                        </div>
-                        <p>This OTP is valid for 5 minutes.</p>
-                    </div>
-                </div>`
-        });
+    await transporter.sendMail({
+      from: process.env.SENDER_MAIL,
+      to: email,
+      subject: "Password Reset OTP",
+      html: `<div style="text-align:center"><h1>Password Reset OTP</h1><p>OTP: ${newotp.otp}</p><p>Valid for 5 minutes</p></div>`,
+    });
 
-        res.status(200).json({ message: "OTP sent successfully", email, otp: newotp.otp });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+    res.status(200).json({ message: "OTP sent successfully", email, otp: newotp.otp });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 export const verifyOTP = async (req, res) => {
-    const { email, otp } = req.body;
-    try {
-        const otpData = await otpmodel.findOne({ email, otp });
-        if (!otpData) return res.status(400).json({ message: "Invalid OTP" });
+  const { email, otp } = req.body;
+  try {
+    const otpData = await otpmodel.findOne({ email, otp });
+    if (!otpData) return res.status(400).json({ message: "Invalid OTP" });
 
-        await otpData.deleteOne();
-        res.status(200).json({ message: "OTP verified successfully" });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+    await otpData.deleteOne();
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-// Reset password
+// ----------------------------
+// Reset Password
+// ----------------------------
 export const resetPassword = async (req, res) => {
   const { newPassword } = req.body;
-
   try {
-    const userId = req.user.id; // ✅ from middleware
-
+    const userId = req.user.id;
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const strongPassword = strongpass(newPassword);
     if (!strongPassword.isStrong) {
-      return res.status(400).json({
-        message: "Password is not strong enough",
-        errors: strongPassword.errors,
-      });
+      return res.status(400).json({ message: "Password is not strong enough", errors: strongPassword.errors });
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
@@ -230,7 +197,7 @@ export const resetPassword = async (req, res) => {
       from: process.env.SENDER_MAIL,
       to: user.email,
       subject: "Password Reset",
-      text: `Your password has been reset successfully.`,
+      text: "Your password has been reset successfully.",
     });
 
     res.status(200).json({ message: "Password reset successfully" });
