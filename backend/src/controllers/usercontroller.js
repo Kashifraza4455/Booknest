@@ -179,40 +179,35 @@ export const verifyOTP = async (req, res) => {
 // Reset Password
 // ----------------------------
 export const resetPassword = async (req, res) => {
-  const {newPassword } = req.body;   // 👈 oldPassword add
-  console.log("🟢 resetPassword payload:", req.body);
-  console.log("🟢 req.user:", req.user);
+  console.log("🟢 Incoming resetPassword request");
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  console.log("User:", req.user);
+
+  const { newPassword } = req.body;
   try {
-    const userId = req.user.id;
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password is required" });
+    }
+
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: no user ID" });
+    }
+
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
-
-    // 👇 Pehle purana password match check karo
-    const isMatch = await bcrypt.compare( user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Old password is incorrect" });
-    }
-
-    const strongPassword = strongpass(newPassword);
-    if (!strongPassword.isStrong) {
-      return res.status(400).json({ message: "Password is not strong enough", errors: strongPassword.errors });
-    }
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
-    await transporter.sendMail({
-      from: process.env.SENDER_MAIL,
-      to: user.email,
-      subject: "Password Reset",
-      text: "Your password has been reset successfully.",
-    });
-
     res.status(200).json({ message: "Password reset successfully" });
   } catch (err) {
+    console.error("❌ Reset password error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 
 
