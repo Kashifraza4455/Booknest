@@ -6,6 +6,7 @@ const backend = import.meta.env.VITE_BACKEND_URL;
 // ====================== User APIs ======================
 
 // Signup
+console.log("Backend URL in frontend:", backend);
 export const signupUser = async (payload) => {
   try {
     const res = await axios.post(`${backend}/api/user/register`, payload);
