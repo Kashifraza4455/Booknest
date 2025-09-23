@@ -32,19 +32,20 @@ const handleChangePassword = async () => {
     setLoading(true);
     setError("");
 
-    // ✅ Pass token in Authorization header
+    // ✅ Call resetPassword
     const res = await resetPassword(oldPassword, newPassword, token);
 
-    console.log("Password reset response:", res.data);
-    alert(res.data.message || "Password reset successfully");
-    navigate("/login");
+    console.log("Password reset response:", res);
+    alert(res.message || "Password reset successfully");
+    navigate("/login"); // Reset ke baad login page bhejo
   } catch (err) {
-    console.error("Reset error:", err.response?.data || err.message);
-    setError(err.response?.data?.message || err.message || "Something went wrong");
+    console.error("Reset error:", err);
+    setError(err.message || "Something went wrong");
   } finally {
     setLoading(false);
   }
 };
+
 
 
 
