@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// ✅ Backend URL
-const API_URL = "http://localhost:3000/api/user"; // backend route ke hisaab se
+// ✅ Use env variable instead of hardcoding
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/user`;
 
 // Signup thunk
 export const signupUser = createAsyncThunk(
@@ -13,9 +13,7 @@ export const signupUser = createAsyncThunk(
       return res.data;
     } catch (err) {
       const message =
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : err.message || "Signup failed";
+        err.response?.data?.message || err.message || "Signup failed";
       return rejectWithValue({ message });
     }
   }
@@ -30,9 +28,7 @@ export const loginUser = createAsyncThunk(
       return res.data;
     } catch (err) {
       const message =
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : err.message || "Login failed";
+        err.response?.data?.message || err.message || "Login failed";
       return rejectWithValue({ message });
     }
   }
@@ -47,9 +43,7 @@ export const forgetPassword = createAsyncThunk(
       return res.data;
     } catch (err) {
       const message =
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : err.message || "Reset password failed";
+        err.response?.data?.message || err.message || "Reset password failed";
       return rejectWithValue({ message });
     }
   }
