@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "../store/slices/authSlice";
 import { sendVerification } from "../api"; // api.js ka path
 
@@ -155,7 +156,7 @@ const handleSendVerification = async () => {
                   className="absolute right-3 top-2 cursor-pointer text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </span>
               </div>
             </div>

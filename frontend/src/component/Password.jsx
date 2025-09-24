@@ -95,7 +95,7 @@ const handleChangePassword = async () => {
               Change Password
             </h3>
             <p className="text-gray-500 text-left">
-              Enter your old password and set a new one
+              Enter your new password
             </p>
           </div>
 
