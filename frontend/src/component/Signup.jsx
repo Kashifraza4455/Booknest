@@ -2,7 +2,9 @@ import '../App.css';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { signupUser } from "../api";
 const backend = import.meta.env.VITE_BACKEND_URL;
+
 
 
 
