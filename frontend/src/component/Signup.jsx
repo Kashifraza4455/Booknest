@@ -2,6 +2,7 @@ import '../App.css';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Eye, EyeOff } from "lucide-react";
 import { signupUser } from "../api";
 const backend = import.meta.env.VITE_BACKEND_URL;
 
@@ -217,7 +218,7 @@ const handleSubmit = async (e) => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-2 text-gray-600"
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
