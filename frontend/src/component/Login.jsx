@@ -16,7 +16,7 @@ function Login() {
   const { loading, error, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user) navigate("/books"); // Redirect after successful login
+    if (user) navigate(""); // Redirect after successful login
   }, [user, navigate]);
 
   // Handle Login
