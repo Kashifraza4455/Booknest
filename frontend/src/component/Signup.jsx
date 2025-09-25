@@ -66,7 +66,7 @@ const handleSubmit = async (e) => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Left Section */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-6 sm:p-10 lg:p-12 flex-col justify-center relative overflow-hidden">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-900 via-purple-800 to-purple-900 text-white p-6 sm:p-10 lg:p-12 flex-col relative overflow-hidden">
         <div className="relative z-10 text-center lg:text-left">
           <div className="mb-6">
             <div className="text-3xl sm:text-4xl mb-2">📚</div>
