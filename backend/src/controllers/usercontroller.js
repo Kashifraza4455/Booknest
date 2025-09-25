@@ -19,7 +19,6 @@ const ipaddress = process.env.BASE_URL; // Localhost or production URL
 const frontendUrl = "http://localhost:5173";
 
 // Create user
-console.log("checkStrongPassword function:", checkStrongPassword); 
 export const createUser = async (req, res) => {
   console.log("Signup request body:", req.body);
 
