@@ -41,6 +41,7 @@ const handleInputChange = (e) => {
 // ✅ Submit handler
 const handleSubmit = async (e) => {
   e.preventDefault();
+  // console.log("Submitting formData:", formData); // ✅ check kya ja raha hai
 
   try {
     const res = await axios.post(
