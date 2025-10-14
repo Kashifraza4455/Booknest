@@ -178,10 +178,6 @@ export const verifyOTP = async (req, res) => {
 // Reset Password
 // ----------------------------
 export const resetPassword = async (req, res) => {
-  console.log("🟢 Incoming resetPassword request");
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-  console.log("User:", req.user);
 
   const { newPassword } = req.body;
   try {
