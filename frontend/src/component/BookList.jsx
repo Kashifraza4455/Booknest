@@ -9,7 +9,7 @@ import { getGlobalBooks } from "../api";
 
 export default function HomePage() {
   const handleClick = () => {
-    navigate("/login"); // ✅ login page route
+    navigate("/login"); 
   };
 
   const [books, setBooks] = useState([]);
@@ -26,7 +26,7 @@ export default function HomePage() {
       } else if (Array.isArray(data.books)) {
         setBooks(data.books);
       } else {
-        setBooks([]); // fallback
+        setBooks([]); 
       }
     } catch (error) {
       console.error("Error fetching books:", error);

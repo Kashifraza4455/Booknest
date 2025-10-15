@@ -13,7 +13,6 @@ const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Backend-compatible initial state
 const [formData, setFormData] = useState({
   firstname: '',
   lastname: '',
@@ -24,7 +23,6 @@ const [formData, setFormData] = useState({
 });
 
 
-  // ✅ Input handler
 const handleInputChange = (e) => {
   const { name, value } = e.target;
 
@@ -38,10 +36,8 @@ const handleInputChange = (e) => {
   }
 };
 
-// ✅ Submit handler
 const handleSubmit = async (e) => {
   e.preventDefault();
-  // console.log("Submitting formData:", formData); // ✅ check kya ja raha hai
 
   try {
     const res = await axios.post(
@@ -51,7 +47,7 @@ const handleSubmit = async (e) => {
     );
     console.log("Signup success:", res.data);
     alert(res.data.message || "Signup successful");
-    navigate("/login"); // redirect to login page
+    navigate("/login"); 
   } catch (err) {
     console.error(
       "Signup failed:",

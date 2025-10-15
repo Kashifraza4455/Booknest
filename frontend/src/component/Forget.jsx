@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { sendOtp } from "../api"; // api.js ka path
+import { sendOtp } from "../api"; 
 
 export default function SendOtp() {
   const [email, setEmail] = useState("");

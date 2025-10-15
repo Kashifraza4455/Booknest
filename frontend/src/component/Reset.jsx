@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import { verifyOtp } from "../api"; // api.js ka path
+import { verifyOtp } from "../api"; 
 
 export default function BookNest() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);

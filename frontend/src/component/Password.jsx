@@ -29,13 +29,6 @@ const handleChangePassword = async () => {
     alert(error.message || "Something went wrong");
   }
 };
-
-
-
-
-
-
-
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side */}

@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "../store/slices/authSlice";
-import { sendVerification } from "../api"; // api.js ka path
+import { sendVerification } from "../api"; 
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +17,7 @@ function Login() {
   const { loading, error, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user) navigate(""); // Redirect after successful login
+    if (user) navigate(""); 
   }, [user, navigate]);
 
   // Handle Login
